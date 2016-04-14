@@ -14,7 +14,9 @@ namespace ChineseChess
     {
         Full = 0,
         UpPart = 1,
-        DownPart = 2
+        DownPart = 2,
+        RightPart =3,
+        LeftPart =4
     }
     //|------------------------------------------------------------------------------|
     //|                                                                              |
@@ -32,8 +34,8 @@ namespace ChineseChess
         Pen p;
         private int iniX = 60;
         private int iniY = 60;
-        private const int chessRow = 8;
-        private const int chessCol = 9;
+        private const int chessRow = 9;
+        private const int chessCol = 8;
         private static int _pieceWidth = 60;
         private ChessType _currentActionType = ChessType.Red;
         private BaseChess _selectChess;
@@ -76,39 +78,9 @@ namespace ChineseChess
             p = new Pen(Color.Black, 2);
             int x1, x2, y1, y2;
 
-            //Vertical line
+            //Horizontal line
             x1 = leftTopPoint.X;
             y1 = leftTopPoint.Y;
-            x2 = leftBottomPoint.X;
-            y2 = leftBottomPoint.Y;
-            for (int i = 0; i <= chessCol; i++)
-            {
-                g.DrawLine(p, x1, y1, x2, y2);
-                x1 += _pieceWidth;
-                x2 = x1;
-
-
-
-            }
-            g.DrawLine(p, leftTopPoint, rightTopPoint);
-            g.DrawLine(p, leftBottomPoint, rightBottomPoint);
-            //left horizontal line
-            x1 = leftTopPoint.X;
-            y1 = leftTopPoint.Y;
-            x2 = leftTopPoint.X + _pieceWidth * 4;
-            y2 = leftTopPoint.Y;
-            for (int i = 0; i <= chessRow; i++)
-            {
-                g.DrawLine(p, x1, y1, x2, y2);
-                y1 += _pieceWidth;
-                y2 = y1;
-
-
-
-            }
-            //right horizontal line
-            x1 = rightTopPoint.X - _pieceWidth * 4;
-            y1 = rightTopPoint.Y;
             x2 = rightTopPoint.X;
             y2 = rightTopPoint.Y;
             for (int i = 0; i <= chessRow; i++)
@@ -116,96 +88,117 @@ namespace ChineseChess
                 g.DrawLine(p, x1, y1, x2, y2);
                 y1 += _pieceWidth;
                 y2 = y1;
-
-
-
             }
-            //left cross line
-            x1 = leftTopPoint.X;
-            y1 = leftTopPoint.Y + _pieceWidth * 3;
+            g.DrawLine(p, leftTopPoint, leftBottomPoint);
+            g.DrawLine(p, rightTopPoint, rightBottomPoint);
+
+            //upper vertical  line
+            x1 = leftTopPoint.X + _pieceWidth;
+            y1 = leftTopPoint.Y;
+            x2 = x1;
+            y2 = y1 + _pieceWidth * 4;
+            for (int i = 1; i < chessCol; i++)
+            {
+                g.DrawLine(p, x1, y1, x2, y2);
+                x1 += _pieceWidth;
+                x2 = x1;
+            }
+            //lower vertical line
+            x1 = leftBottomPoint.X;
+            y1 = leftBottomPoint.Y;
+            x2 = leftBottomPoint.X;
+            y2 = leftBottomPoint.Y - _pieceWidth * 4;
+            for (int i = 1; i < chessRow; i++)
+            {
+                g.DrawLine(p, x1, y1, x2, y2);
+                x1 += _pieceWidth;
+                x2 = x1;
+            }
+
+            //upper cross line
+            x1 = leftTopPoint.X + _pieceWidth * 3;
+            y1 = leftTopPoint.Y;
             x2 = x1 + _pieceWidth * 2;
             y2 = y1 + _pieceWidth * 2;
             g.DrawLine(p, x1, y1, x2, y2);
-            x1 = leftTopPoint.X;
-            y1 = leftTopPoint.Y + _pieceWidth * 5;
+            
+            x1 = x1 + _pieceWidth * 2;
+            x2 = x1 - _pieceWidth * 2;
+            g.DrawLine(p, x1, y1, x2, y2);
+
+            //lower cross line
+            x1 = leftBottomPoint.X + _pieceWidth * 3;
+            y1 = leftBottomPoint.Y;
             x2 = x1 + _pieceWidth * 2;
             y2 = y1 - _pieceWidth * 2;
             g.DrawLine(p, x1, y1, x2, y2);
 
-            //right cross line
-            x1 = rightTopPoint.X;
-            y1 = rightTopPoint.Y + _pieceWidth * 3;
+            x1 = x1 + _pieceWidth * 2;
             x2 = x1 - _pieceWidth * 2;
-            y2 = y1 + _pieceWidth * 2;
-            g.DrawLine(p, x1, y1, x2, y2);
-            x1 = rightTopPoint.X;
-            y1 = rightTopPoint.Y + _pieceWidth * 5;
-            x2 = x1 - _pieceWidth * 2;
-            y2 = y1 - _pieceWidth * 2;
             g.DrawLine(p, x1, y1, x2, y2);
 
             //draw position line for special chess pieces
-            //left top Cannon
-            x1 = leftTopPoint.X + _pieceWidth * 2;
-            y1 = leftTopPoint.Y + _pieceWidth;
+            //upper left Cannon
+            x1 = leftTopPoint.X + _pieceWidth;
+            y1 = leftTopPoint.Y + _pieceWidth*2;
             drawPostion(x1, y1);
             //left Pawn 1
-            x1 = leftTopPoint.X + _pieceWidth * 3;
-            y1 = leftTopPoint.Y;
-            drawPostion(x1, y1, PostionLineType.DownPart);
+            x1 = leftTopPoint.X;
+            y1 = leftTopPoint.Y + _pieceWidth * 3;
+            drawPostion(x1, y1, PostionLineType.RightPart);
             //left Pawn 2
-            y1 += (_pieceWidth * 2);
+            x1 += (_pieceWidth * 2);
             drawPostion(x1, y1);
             //left Pawn 3
-            y1 += (_pieceWidth * 2);
+            x1 += (_pieceWidth * 2);
             drawPostion(x1, y1);
             //left Pawn 4
-            y1 += (_pieceWidth * 2);
+            x1 += (_pieceWidth * 2);
             drawPostion(x1, y1);
             //left Pawn 5
-            y1 += (_pieceWidth * 2);
-            drawPostion(x1, y1, PostionLineType.UpPart);
-            //left bottom Cannon
-            x1 = leftBottomPoint.X + _pieceWidth * 2;
-            y1 = leftBottomPoint.Y - _pieceWidth;
+            x1 += (_pieceWidth * 2);
+            drawPostion(x1, y1, PostionLineType.LeftPart);
+            //upper right Cannon's position
+            x1 = rightTopPoint.X - _pieceWidth;
+            y1 = rightTopPoint.Y + _pieceWidth * 2;
             drawPostion(x1, y1);
 
-            //right top Cannon
-            x1 = rightTopPoint.X - _pieceWidth * 2;
-            y1 = rightTopPoint.Y + _pieceWidth;
+            //lower left Cannon
+            x1 = leftBottomPoint.X + _pieceWidth;
+            y1 = leftBottomPoint.Y - _pieceWidth * 2;
             drawPostion(x1, y1);
-            //right Pawn 1
-            x1 = rightTopPoint.X - _pieceWidth * 3;
-            y1 = rightTopPoint.Y;
-            drawPostion(x1, y1, PostionLineType.DownPart);
-            //right Pawn 2
-            y1 += (_pieceWidth * 2);
+            //lower Pawn 1
+            x1 = leftBottomPoint.X;
+            y1 = leftBottomPoint.Y - _pieceWidth * 3;
+            drawPostion(x1, y1, PostionLineType.RightPart);
+            //lower Pawn 2
+            x1 += (_pieceWidth * 2);
             drawPostion(x1, y1);
-            //right Pawn 3
-            y1 += (_pieceWidth * 2);
+            //lower Pawn 3
+            x1 += (_pieceWidth * 2);
             drawPostion(x1, y1);
-            //right Pawn 4
-            y1 += (_pieceWidth * 2);
+            //lower Pawn 4
+            x1 += (_pieceWidth * 2);
             drawPostion(x1, y1);
-            //right Pawn 5
-            y1 += (_pieceWidth * 2);
-            drawPostion(x1, y1, PostionLineType.UpPart);
-            //right bottom Cannon
-            x1 = rightBottomPoint.X - _pieceWidth * 2;
-            y1 = rightBottomPoint.Y - _pieceWidth;
+            //lower Pawn 5
+            x1 += (_pieceWidth * 2);
+            drawPostion(x1, y1, PostionLineType.LeftPart);
+            //lower right Cannon
+            x1 = rightBottomPoint.X - _pieceWidth;
+            y1 = rightBottomPoint.Y - _pieceWidth * 2;
             drawPostion(x1, y1);
 
-            //"楚河","汉界"字
-            FontFamily fm = new FontFamily("黑体");
-            Font f = new Font(fm, 30);
-            StringFormat sf = new StringFormat();
-            sf.Alignment = StringAlignment.Near;
-            g.DrawString("楚", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 1.3), sf);
-            g.DrawString("河", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 2.3), sf);
+            ////"楚河","汉界"字
+            //FontFamily fm = new FontFamily("黑体");
+            //Font f = new Font(fm, 30);
+            //StringFormat sf = new StringFormat();
+            //sf.Alignment = StringAlignment.Near;
+            //g.DrawString("楚", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 1.3), sf);
+            //g.DrawString("河", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 2.3), sf);
 
-            g.DrawString("汉", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 4.3), sf);
-            g.DrawString("界", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 5.3), sf);
-            g.DrawString("", f, Brushes.Black, leftTopPoint.X + _pieceWidth * 5, leftTopPoint.Y + _pieceWidth * 4, sf);
+            //g.DrawString("汉", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 4.3), sf);
+            //g.DrawString("界", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 5.3), sf);
+            //g.DrawString("", f, Brushes.Black, leftTopPoint.X + _pieceWidth * 5, leftTopPoint.Y + _pieceWidth * 4, sf);
             //f.Dispose();
 
 
@@ -273,7 +266,54 @@ namespace ChineseChess
         {
             int offset = 5;
             int lineWidth = 20;
-            if (theType == PostionLineType.Full || theType == PostionLineType.UpPart)
+            //if (theType == PostionLineType.Full || theType == PostionLineType.UpPart)
+            //{
+            //    //left top
+            //    Point temp11 = new Point(x - offset, y - offset);
+            //    Point temp12 = new Point(x - offset - lineWidth, y - offset);
+            //    Point temp13 = new Point(x - offset, y - offset - lineWidth);
+            //    g.DrawLine(p, temp11, temp12);
+            //    g.DrawLine(p, temp11, temp13);
+            //    //right top
+            //    Point temp21 = new Point(x + offset, y - offset);
+            //    Point temp22 = new Point(x + offset, y - offset - lineWidth);
+            //    Point temp23 = new Point(x + offset + lineWidth, y - offset);
+            //    g.DrawLine(p, temp21, temp22);
+            //    g.DrawLine(p, temp21, temp23);
+            //}
+            //if (theType == PostionLineType.Full || theType == PostionLineType.DownPart)
+            //{
+            //    //left bottom
+            //    Point temp31 = new Point(x - offset, y + offset);
+            //    Point temp32 = new Point(x - offset, y + offset + lineWidth);
+            //    Point temp33 = new Point(x - offset - lineWidth, y + offset);
+            //    g.DrawLine(p, temp31, temp32);
+            //    g.DrawLine(p, temp31, temp33);
+            //    //right bottom
+            //    Point temp41 = new Point(x + offset, y + offset);
+            //    Point temp42 = new Point(x + offset + lineWidth, y + offset);
+            //    Point temp43 = new Point(x + offset, y + offset + lineWidth);
+            //    g.DrawLine(p, temp41, temp42);
+            //    g.DrawLine(p, temp41, temp43);
+            //}
+
+            if (theType == PostionLineType.Full || theType == PostionLineType.RightPart)
+            {
+                
+                //right top
+                Point temp21 = new Point(x + offset, y - offset);
+                Point temp22 = new Point(x + offset, y - offset - lineWidth);
+                Point temp23 = new Point(x + offset + lineWidth, y - offset);
+                g.DrawLine(p, temp21, temp22);
+                g.DrawLine(p, temp21, temp23);
+                //right bottom
+                Point temp41 = new Point(x + offset, y + offset);
+                Point temp42 = new Point(x + offset + lineWidth, y + offset);
+                Point temp43 = new Point(x + offset, y + offset + lineWidth);
+                g.DrawLine(p, temp41, temp42);
+                g.DrawLine(p, temp41, temp43);
+            }
+            if (theType == PostionLineType.Full || theType == PostionLineType.LeftPart)
             {
                 //left top
                 Point temp11 = new Point(x - offset, y - offset);
@@ -281,27 +321,13 @@ namespace ChineseChess
                 Point temp13 = new Point(x - offset, y - offset - lineWidth);
                 g.DrawLine(p, temp11, temp12);
                 g.DrawLine(p, temp11, temp13);
-                //right top
-                Point temp21 = new Point(x + offset, y - offset);
-                Point temp22 = new Point(x + offset, y - offset - lineWidth);
-                Point temp23 = new Point(x + offset + lineWidth, y - offset);
-                g.DrawLine(p, temp21, temp22);
-                g.DrawLine(p, temp21, temp23);
-            }
-            if (theType == PostionLineType.Full || theType == PostionLineType.DownPart)
-            {
                 //left bottom
                 Point temp31 = new Point(x - offset, y + offset);
                 Point temp32 = new Point(x - offset, y + offset + lineWidth);
                 Point temp33 = new Point(x - offset - lineWidth, y + offset);
                 g.DrawLine(p, temp31, temp32);
                 g.DrawLine(p, temp31, temp33);
-                //right bottom
-                Point temp41 = new Point(x + offset, y + offset);
-                Point temp42 = new Point(x + offset + lineWidth, y + offset);
-                Point temp43 = new Point(x + offset, y + offset + lineWidth);
-                g.DrawLine(p, temp41, temp42);
-                g.DrawLine(p, temp41, temp43);
+               
             }
 
 

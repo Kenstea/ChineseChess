@@ -47,7 +47,7 @@
             this.panel1.BackColor = System.Drawing.Color.AntiqueWhite;
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(629, 559);
+            this.panel1.Size = new System.Drawing.Size(629, 603);
             this.panel1.TabIndex = 0;
             this.panel1.Click += new System.EventHandler(this.panel1_Click);
             this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
@@ -152,7 +152,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(921, 596);
+            this.ClientSize = new System.Drawing.Size(921, 635);
             this.Controls.Add(this.dangerLabel);
             this.Controls.Add(this.UndoButton);
             this.Controls.Add(this.TypeStatus);
