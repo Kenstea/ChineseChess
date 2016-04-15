@@ -19,17 +19,17 @@ namespace ChineseChess.ChessItems
             }
             if (Type == ChessType.Red)
             {
-                if (GridX<=4)
+                if (GridY <= 4)
                 {
-                    if (gridX-GridX==1 && GridY == gridY)
+                    if (gridY - GridY == 1 && GridX == gridX)
                     {
                         isObey = true;
                     }
                 }
                 else
                 {
-                    if ((gridX - GridX == 1 && GridY == gridY) ||
-                        (Math.Abs(GridY - gridY) == 1 && GridX == gridX))
+                    if ((gridY - GridY == 1 && GridX == gridX) ||
+                        (Math.Abs(GridX - gridX) == 1 && GridY == gridY))
                     {
                         isObey = true;
                     }
@@ -37,17 +37,17 @@ namespace ChineseChess.ChessItems
             }
             else
             {
-                if (GridX >= 5)
+                if (GridY >= 5)
                 {
-                    if (GridX - gridX == 1 && GridY == gridY)
+                    if (GridY - gridY == 1 && GridX == gridX)
                     {
                         isObey = true;
                     }
                 }
                 else
                 {
-                    if ((GridX - gridX == 1 && GridY == gridY) ||
-                        (Math.Abs(GridY - gridY) == 1 && GridX == gridX))
+                    if ((GridY - gridY == 1 && GridX == gridX) ||
+                        (Math.Abs(GridX - gridX) == 1 && GridY == gridX))
                     {
                         isObey = true;
                     }

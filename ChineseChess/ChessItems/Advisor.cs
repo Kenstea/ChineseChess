@@ -16,14 +16,14 @@ namespace ChineseChess.ChessItems
             {
                 return false;
             }
-            if(Math.Abs(gridX-GridX)==1 && Math.Abs(gridY-GridY)==1 
-                && gridY >= 3 && gridY <= 5)
+            if (Math.Abs(gridX - GridX) == 1 && Math.Abs(gridY - GridY) == 1
+                && gridX >= 3 && gridX <= 5)
             {
-                if (gridX <=2 && Type == ChessType.Red)
+                if (gridY <= 2 && Type == ChessType.Red)
                 {
                     return true;
-                } 
-                else if(gridX>=7 && Type== ChessType.Black)
+                }
+                else if (gridY >= 7 && Type == ChessType.Black)
                 {
                     return true;
                 }

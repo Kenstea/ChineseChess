@@ -69,7 +69,7 @@ namespace ChineseChess.ChessItems
             {
                 return false;
             }
-            
+
 
         }
     }

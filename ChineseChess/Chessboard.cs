@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using ChineseChess.ChessItems;
+using System.Diagnostics;
 
 namespace ChineseChess
 {
@@ -15,8 +16,8 @@ namespace ChineseChess
         Full = 0,
         UpPart = 1,
         DownPart = 2,
-        RightPart =3,
-        LeftPart =4
+        RightPart = 3,
+        LeftPart = 4
     }
     //|------------------------------------------------------------------------------|
     //|                                                                              |
@@ -46,6 +47,10 @@ namespace ChineseChess
         //Button startButton;
 
         private List<BaseChess> _chessPieces = new List<BaseChess>();
+
+        private EngineClient _theEngineClient = null;
+
+
         public List<BaseChess> ChessPieces
         {
             get { return _chessPieces; }
@@ -121,7 +126,7 @@ namespace ChineseChess
             x2 = x1 + _pieceWidth * 2;
             y2 = y1 + _pieceWidth * 2;
             g.DrawLine(p, x1, y1, x2, y2);
-            
+
             x1 = x1 + _pieceWidth * 2;
             x2 = x1 - _pieceWidth * 2;
             g.DrawLine(p, x1, y1, x2, y2);
@@ -140,7 +145,7 @@ namespace ChineseChess
             //draw position line for special chess pieces
             //upper left Cannon
             x1 = leftTopPoint.X + _pieceWidth;
-            y1 = leftTopPoint.Y + _pieceWidth*2;
+            y1 = leftTopPoint.Y + _pieceWidth * 2;
             drawPostion(x1, y1);
             //left Pawn 1
             x1 = leftTopPoint.X;
@@ -242,7 +247,7 @@ namespace ChineseChess
                 _currentActionType = _getOppositeType(_currentActionType);
             }
             TypeStatus.Text = Enum.GetName(typeof(ChessType), _currentActionType);
-            if (_currentActionType ==  ChessType.Red)
+            if (_currentActionType == ChessType.Red)
             {
                 TypeStatus.ForeColor = Color.Red;
             }
@@ -299,7 +304,7 @@ namespace ChineseChess
 
             if (theType == PostionLineType.Full || theType == PostionLineType.RightPart)
             {
-                
+
                 //right top
                 Point temp21 = new Point(x + offset, y - offset);
                 Point temp22 = new Point(x + offset, y - offset - lineWidth);
@@ -327,7 +332,7 @@ namespace ChineseChess
                 Point temp33 = new Point(x - offset - lineWidth, y + offset);
                 g.DrawLine(p, temp31, temp32);
                 g.DrawLine(p, temp31, temp33);
-               
+
             }
 
 
@@ -352,11 +357,19 @@ namespace ChineseChess
             //createDangerLabel();
             //_previousChess = new Pawn();
             //_previousChess.Disposed += new EventHandler(_previousChess_Disposed);
+
+            _theEngineClient = EngineClient.DefaultEngineClient;
+            _theEngineClient.ReceviedEngineData += new DataReceivedEventHandler(_theEngineClient_ReceviedEngineData);
         }
 
-        private void _previousChess_Disposed(object sender,EventArgs e)
+        private void _previousChess_Disposed(object sender, EventArgs e)
         {
-            
+
+        }
+
+        private void _theEngineClient_ReceviedEngineData(object sender, DataReceivedEventArgs e)
+        {
+
         }
 
         public BaseChess hasChessOnPoint(int gridX, int gridY)
@@ -461,10 +474,10 @@ namespace ChineseChess
             {
                 Rook ju1 = new Rook();
                 ju1.Type = ChessType.Red;
-                ju1.GridX = 0;
-                ju1.GridY = i;
-                ju1.PreviousGridX = 0;
-                ju1.PreviousGridY = i;
+                ju1.GridX = i;
+                ju1.GridY = 0;
+                ju1.PreviousGridX = i;
+                ju1.PreviousGridY = 0;
                 ju1.Text = "车";
                 ju1.InitChess();
                 this.panel1.Controls.Add(ju1);
@@ -477,10 +490,10 @@ namespace ChineseChess
             {
                 Knight ma = new Knight();
                 ma.Type = ChessType.Red;
-                ma.GridX = 0;
-                ma.GridY = i;
-                ma.PreviousGridX = 0;
-                ma.PreviousGridY = i;
+                ma.GridX = i;
+                ma.GridY = 0;
+                ma.PreviousGridX = i;
+                ma.PreviousGridY = 0;
                 ma.Text = "马";
                 ma.InitChess();
                 this.panel1.Controls.Add(ma);
@@ -489,10 +502,10 @@ namespace ChineseChess
                 //因为“炮”与“马”的位置都类似，循环次数也一样
                 Cannon pao = new Cannon();
                 pao.Type = ChessType.Red;
-                pao.GridX = 2;
-                pao.GridY = i;
-                pao.PreviousGridX = 2;
-                pao.PreviousGridY = i;
+                pao.GridX = i;
+                pao.GridY = 2;
+                pao.PreviousGridX = i;
+                pao.PreviousGridY = 2;
                 pao.Text = "炮";
                 pao.InitChess();
                 this.panel1.Controls.Add(pao);
@@ -503,10 +516,10 @@ namespace ChineseChess
             {
                 Bishop xiang = new Bishop();
                 xiang.Type = ChessType.Red;
-                xiang.GridX = 0;
-                xiang.GridY = i;
-                xiang.PreviousGridX = 0;
-                xiang.PreviousGridY = i;
+                xiang.GridX = i;
+                xiang.GridY = 0;
+                xiang.PreviousGridX = i;
+                xiang.PreviousGridY = 0;
                 xiang.Text = "相";
                 xiang.InitChess();
                 this.panel1.Controls.Add(xiang);
@@ -517,10 +530,10 @@ namespace ChineseChess
             {
                 Advisor shi = new Advisor();
                 shi.Type = ChessType.Red;
-                shi.GridX = 0;
-                shi.GridY = i;
-                shi.PreviousGridX = 0;
-                shi.PreviousGridY = i;
+                shi.GridX = i;
+                shi.GridY = 0;
+                shi.PreviousGridX = i;
+                shi.PreviousGridY = 0;
                 shi.Text = "士";
                 shi.InitChess();
                 this.panel1.Controls.Add(shi);
@@ -529,10 +542,10 @@ namespace ChineseChess
 
             jiang = new King();
             jiang.Type = ChessType.Red;
-            jiang.GridX = 0;
-            jiang.GridY = 4;
-            jiang.PreviousGridX = 0;
-            jiang.PreviousGridY = 4;
+            jiang.GridX = 4;
+            jiang.GridY = 0;
+            jiang.PreviousGridX = 4;
+            jiang.PreviousGridY = 0;
             jiang.Text = "将";
             jiang.InitChess();
             this.panel1.Controls.Add(jiang);
@@ -544,10 +557,10 @@ namespace ChineseChess
             {
                 Pawn bing = new Pawn();
                 bing.Type = ChessType.Red;
-                bing.GridX = 3;
-                bing.GridY = i;
-                bing.PreviousGridX = 3;
-                bing.PreviousGridY = i;
+                bing.GridX = i;
+                bing.GridY = 3;
+                bing.PreviousGridX = i;
+                bing.PreviousGridY = 3;
                 bing.Text = "兵";
                 bing.InitChess();
                 this.panel1.Controls.Add(bing);
@@ -560,10 +573,10 @@ namespace ChineseChess
             {
                 Rook ju1 = new Rook();
                 ju1.Type = ChessType.Black;
-                ju1.GridX = 9;
-                ju1.GridY = i;
-                ju1.PreviousGridX = 9;
-                ju1.PreviousGridY = i;
+                ju1.GridX = i;
+                ju1.GridY = 9;
+                ju1.PreviousGridX = i;
+                ju1.PreviousGridY = 9;
                 ju1.Text = "車";
                 ju1.InitChess();
                 this.panel1.Controls.Add(ju1);
@@ -574,10 +587,10 @@ namespace ChineseChess
             {
                 Knight ma = new Knight();
                 ma.Type = ChessType.Black;
-                ma.GridX = 9;
-                ma.GridY = i;
-                ma.PreviousGridX = 9;
-                ma.PreviousGridY = i;
+                ma.GridX = i;
+                ma.GridY = 9;
+                ma.PreviousGridX = i;
+                ma.PreviousGridY = 9;
                 ma.Text = "馬";
                 ma.InitChess();
                 this.panel1.Controls.Add(ma);
@@ -586,10 +599,10 @@ namespace ChineseChess
                 //因为“炮”与“马”的位置都类似，循环次数也一样
                 Cannon pao = new Cannon();
                 pao.Type = ChessType.Black;
-                pao.GridX = 7;
-                pao.GridY = i;
-                pao.PreviousGridX = 7;
-                pao.PreviousGridY = i;
+                pao.GridX = i;
+                pao.GridY = 7;
+                pao.PreviousGridX = i;
+                pao.PreviousGridY = 7;
                 pao.Text = "炮";
                 pao.InitChess();
                 this.panel1.Controls.Add(pao);
@@ -600,10 +613,10 @@ namespace ChineseChess
             {
                 Bishop xiang = new Bishop();
                 xiang.Type = ChessType.Black;
-                xiang.GridX = 9;
-                xiang.GridY = i;
-                xiang.PreviousGridX = 9;
-                xiang.PreviousGridY = i;
+                xiang.GridX = i;
+                xiang.GridY = 9;
+                xiang.PreviousGridX = i;
+                xiang.PreviousGridY = 9;
                 xiang.Text = "象";
                 xiang.InitChess();
                 this.panel1.Controls.Add(xiang);
@@ -614,10 +627,10 @@ namespace ChineseChess
             {
                 Advisor shi = new Advisor();
                 shi.Type = ChessType.Black;
-                shi.GridX = 9;
-                shi.GridY = i;
-                shi.PreviousGridX = 9;
-                shi.PreviousGridY = i;
+                shi.GridX = i;
+                shi.GridY = 9;
+                shi.PreviousGridX = i;
+                shi.PreviousGridY = 9;
                 shi.Text = "仕";
                 shi.InitChess();
                 this.panel1.Controls.Add(shi);
@@ -626,10 +639,10 @@ namespace ChineseChess
 
             shuai = new King();
             shuai.Type = ChessType.Black;
-            shuai.GridX = 9;
-            shuai.GridY = 4;
-            shuai.PreviousGridX = 9;
-            shuai.PreviousGridY = 4;
+            shuai.GridX = 4;
+            shuai.GridY = 9;
+            shuai.PreviousGridX = 4;
+            shuai.PreviousGridY = 9;
             shuai.Text = "帅";
             shuai.InitChess();
             this.panel1.Controls.Add(shuai);
@@ -641,10 +654,10 @@ namespace ChineseChess
             {
                 Pawn bing = new Pawn();
                 bing.Type = ChessType.Black;
-                bing.GridX = 6;
-                bing.GridY = i;
-                bing.PreviousGridX = 6;
-                bing.PreviousGridY = i;
+                bing.GridX = i;
+                bing.GridY = 6;
+                bing.PreviousGridX = i;
+                bing.PreviousGridY = 6;
                 bing.Text = "卒";
                 bing.InitChess();
                 this.panel1.Controls.Add(bing);
@@ -688,7 +701,7 @@ namespace ChineseChess
                     BaseChess beAttackChess = (BaseChess)sender;
                     if (_selectChess.move(beAttackChess.Location))
                     {
-                        
+
                         _previousOppositeChess = beAttackChess.Clone();
                         beAttackChess.remove();
                         doSomeAfterMove();
@@ -701,7 +714,7 @@ namespace ChineseChess
                     _selectChess.IsChecked = false;
                     //更换当前引用
                     _selectChess = _tempChess;
-                    
+
                 }
             }
 
@@ -782,7 +795,7 @@ namespace ChineseChess
         }
         private bool isKingDangerFromOtherChess(King theKing)
         {
-            
+
             foreach (Control curCtr in this.panel1.Controls)
             {
                 if (curCtr is BaseChess)
@@ -793,12 +806,12 @@ namespace ChineseChess
                     {
                         if (tempChess.obeyTheLimit(theKing.GridX, theKing.GridY))
                         {
-                            
+
                             showDangerInfo();
                             return true;
-                         
+
                         }
-                       
+
                     }
                 }
             }
@@ -811,12 +824,12 @@ namespace ChineseChess
             if (theType == ChessType.Red)
             {
                 return shuai;
-            } 
+            }
             else
             {
                 return jiang;
             }
-            
+
         }
 
         private King getOwnKing(ChessType theType)
@@ -885,7 +898,7 @@ namespace ChineseChess
         //    dangerLabel.TextAlign = ContentAlignment.MiddleCenter;
         //    dangerLabel.Font = new System.Drawing.Font("黑体", 30F, FontStyle.Bold);
         //    dangerLabel.Location = new Point(720,80);
-           
+
         //    dangerLabel.AutoSize = true;
         //    //this.label1.Location = new System.Drawing.Point(752, 200);
         //    dangerLabel.Name = "dangerLabel";
@@ -902,7 +915,7 @@ namespace ChineseChess
         {
             dangerLabel.Visible = true;
             //System.Threading.Thread.Sleep(1500);
-            
+
 
         }
         private void threadPro()
@@ -920,7 +933,7 @@ namespace ChineseChess
             {
                 dangerLabel.Visible = false;
             }
-            
+
             UndoButton.Enabled = true;
             _previousChess = _selectChess;
             _selectChess.IsChecked = false;
@@ -939,7 +952,7 @@ namespace ChineseChess
             }
             return ChessType.Red;
         }
-        
+
         private void UndoButton_Click(object sender, EventArgs e)
         {
             try
@@ -955,7 +968,7 @@ namespace ChineseChess
                 {
                     //Type theType = _previousOppositeChess.GetType();
                     //object theChess = Activator.CreateInstance(theType);
-                    
+
                     //BaseChess newChess = _previousOppositeChess.Clone();
                     //int index = this.panel1.Controls.GetChildIndex(_previousOppositeChess, false);
                     //Pawn theBing = new Pawn();
@@ -965,19 +978,19 @@ namespace ChineseChess
                     //theBing.Text = "卒";
                     _previousOppositeChess.MouseClick += new MouseEventHandler(chessItem_MouseClick);
                     this.panel1.Controls.Add(_previousOppositeChess);
-                    _previousOppositeChess =null;
+                    _previousOppositeChess = null;
                 }
                 if (dangerLabel.Visible)
                 {
                     dangerLabel.Visible = false;
                 }
-                UndoButton.Enabled =false;
+                UndoButton.Enabled = false;
             }
             catch (System.Exception ex)
             {
                 MessageBox.Show(ex.ToString());
             }
-        
+
 
         }
 
@@ -986,7 +999,7 @@ namespace ChineseChess
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            
+
         }
         //private void Chessboard_Resize(object sender, EventArgs e)
         //{
