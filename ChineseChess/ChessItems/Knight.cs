@@ -10,6 +10,11 @@ namespace ChineseChess.ChessItems
     /// </summary>
     public class Knight : BaseChess
     {
+        public Knight()
+        {
+            _pieceType = ChessPieceType.KNIGHT;
+        }
+
         public override bool obeyTheLimit(int gridX, int gridY)
         {
 

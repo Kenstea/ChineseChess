@@ -10,6 +10,10 @@ namespace ChineseChess.ChessItems
     /// </summary>
     public class Rook : BaseChess
     {
+        public Rook()
+        {
+            _pieceType = ChessPieceType.ROOK;
+        }
         public override bool obeyTheLimit(int gridX, int gridY)
         {
             int min;

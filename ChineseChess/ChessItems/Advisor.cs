@@ -10,6 +10,10 @@ namespace ChineseChess.ChessItems
     /// </summary>
     public class Advisor : BaseChess
     {
+        public Advisor()
+        {
+            _pieceType = ChessPieceType.ADVISOR;
+        }
         public override bool obeyTheLimit(int gridX, int gridY)
         {
             if (!base.obeyTheLimit(gridX, gridY))

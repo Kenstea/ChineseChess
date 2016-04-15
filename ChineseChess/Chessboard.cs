@@ -46,16 +46,16 @@ namespace ChineseChess
         private King shuai;
         //Button startButton;
 
-        private List<BaseChess> _chessPieces = new List<BaseChess>();
+        //private List<BaseChess> _chessPieces = new List<BaseChess>();
 
         private EngineClient _theEngineClient = null;
+        public byte[,] chessArray = new byte[10, 9];
 
-
-        public List<BaseChess> ChessPieces
-        {
-            get { return _chessPieces; }
-            set { _chessPieces = value; }
-        }
+        //public List<BaseChess> ChessPieces
+        //{
+        //    get { return _chessPieces; }
+        //    set { _chessPieces = value; }
+        //}
         public Chessboard()
         {
             InitializeComponent();
@@ -372,20 +372,20 @@ namespace ChineseChess
 
         }
 
-        public BaseChess hasChessOnPoint(int gridX, int gridY)
-        {
-            BaseChess theChess = null;
-            foreach (BaseChess curChess in _chessPieces)
-            {
-                if (curChess.GridX == gridX && curChess.GridY == gridY)
-                {
-                    theChess = curChess;
-                }
-            }
+        //public BaseChess hasChessOnPoint(int gridX, int gridY)
+        //{
+        //    BaseChess theChess = null;
+        //    foreach (BaseChess curChess in _chessPieces)
+        //    {
+        //        if (curChess.GridX == gridX && curChess.GridY == gridY)
+        //        {
+        //            theChess = curChess;
+        //        }
+        //    }
 
-            return theChess;
+        //    return theChess;
 
-        }
+        //}
         //public List<BaseChess> hasChessBetweenPointsInLine(Point pointA, Point pointB)
         //{
         //    List<BaseChess> theList = new List<BaseChess>();
@@ -482,7 +482,7 @@ namespace ChineseChess
                 ju1.InitChess();
                 this.panel1.Controls.Add(ju1);
                 ju1.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-
+                chessArray[i, 0] = (byte)ju1.PieceType;
 
             }
 
@@ -498,7 +498,7 @@ namespace ChineseChess
                 ma.InitChess();
                 this.panel1.Controls.Add(ma);
                 ma.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-
+                chessArray[i, 0] = (byte)ma.PieceType;
                 //因为“炮”与“马”的位置都类似，循环次数也一样
                 Cannon pao = new Cannon();
                 pao.Type = ChessType.Red;
@@ -510,6 +510,7 @@ namespace ChineseChess
                 pao.InitChess();
                 this.panel1.Controls.Add(pao);
                 pao.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 2] = (byte)pao.PieceType;
             }
 
             for (int i = 2; i <= 6; i += 4)
@@ -524,6 +525,7 @@ namespace ChineseChess
                 xiang.InitChess();
                 this.panel1.Controls.Add(xiang);
                 xiang.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 0] = (byte)xiang.PieceType;
             }
 
             for (int i = 3; i <= 6; i += 2)
@@ -538,6 +540,7 @@ namespace ChineseChess
                 shi.InitChess();
                 this.panel1.Controls.Add(shi);
                 shi.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 0] = (byte)shi.PieceType;
             }
 
             jiang = new King();
@@ -552,6 +555,7 @@ namespace ChineseChess
             jiang.MouseClick += new MouseEventHandler(chessItem_MouseClick);
             jiang.BeRemoved += new EventHandler(_beRemovedEventHandler);
             //jiang.IsMoved += new EventHandler(checkKingFaceToFace);
+            chessArray[4, 0] = (byte)jiang.PieceType;
 
             for (int i = 0; i <= 8; i += 2)
             {
@@ -565,6 +569,7 @@ namespace ChineseChess
                 bing.InitChess();
                 this.panel1.Controls.Add(bing);
                 bing.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 3] = (byte)bing.PieceType;
             }
             #endregion
 
@@ -581,6 +586,7 @@ namespace ChineseChess
                 ju1.InitChess();
                 this.panel1.Controls.Add(ju1);
                 ju1.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 9] = (byte)ju1.PieceType;
             }
 
             for (int i = 1; i <= 7; i += 6)
@@ -595,6 +601,7 @@ namespace ChineseChess
                 ma.InitChess();
                 this.panel1.Controls.Add(ma);
                 ma.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 9] = (byte)ma.PieceType;
 
                 //因为“炮”与“马”的位置都类似，循环次数也一样
                 Cannon pao = new Cannon();
@@ -607,6 +614,7 @@ namespace ChineseChess
                 pao.InitChess();
                 this.panel1.Controls.Add(pao);
                 pao.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 7] = (byte)pao.PieceType;
             }
 
             for (int i = 2; i <= 6; i += 4)
@@ -621,6 +629,7 @@ namespace ChineseChess
                 xiang.InitChess();
                 this.panel1.Controls.Add(xiang);
                 xiang.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 9] = (byte)xiang.PieceType;
             }
 
             for (int i = 3; i <= 6; i += 2)
@@ -635,6 +644,7 @@ namespace ChineseChess
                 shi.InitChess();
                 this.panel1.Controls.Add(shi);
                 shi.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 9] = (byte)shi.PieceType;
             }
 
             shuai = new King();
@@ -649,6 +659,7 @@ namespace ChineseChess
             shuai.MouseClick += new MouseEventHandler(chessItem_MouseClick);
             shuai.BeRemoved += new EventHandler(_beRemovedEventHandler);
             //shuai.IsMoved += new EventHandler(checkKingFaceToFace);
+            chessArray[4, 9] = (byte)shuai.PieceType;
 
             for (int i = 0; i <= 8; i += 2)
             {
@@ -662,6 +673,7 @@ namespace ChineseChess
                 bing.InitChess();
                 this.panel1.Controls.Add(bing);
                 bing.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                chessArray[i, 6] = (byte)bing.PieceType;
             }
             StartButton.Enabled = false;
             #endregion
@@ -701,7 +713,8 @@ namespace ChineseChess
                     BaseChess beAttackChess = (BaseChess)sender;
                     if (_selectChess.move(beAttackChess.Location))
                     {
-
+                        chessArray[_selectChess.GridX, _selectChess.GridY] = (byte)_selectChess.PieceType;
+                        chessArray[beAttackChess.GridX, beAttackChess.GridY] = 0;
                         _previousOppositeChess = beAttackChess.Clone();
                         beAttackChess.remove();
                         doSomeAfterMove();
@@ -845,6 +858,11 @@ namespace ChineseChess
 
         }
 
+        private void _updatePositionToEngine()
+        {
+
+        }
+
         private void panel1_Paint(object sender, PaintEventArgs e)
         {
             drawChessBoard();
@@ -882,6 +900,7 @@ namespace ChineseChess
                 if (_selectChess.move(e.Location))
                 {
                     //_selectChess.IsChecked = false;
+                    chessArray[_selectChess.GridX, _selectChess.GridY] = (byte)_selectChess.PieceType;
                     doSomeAfterMove();
                 }
             }

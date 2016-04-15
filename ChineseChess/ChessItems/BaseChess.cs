@@ -12,8 +12,19 @@ namespace ChineseChess.ChessItems
         Black = 0,
         Red = 1
     }
-    
 
+    public enum ChessPieceType
+    {
+        NONE = 0,
+        KING = 1,
+        ROOK = 2,
+        KNIGHT = 3,
+        CANNON = 4,
+        BISHOP = 5,
+        ADVISOR = 6,
+        PAWN = 7
+       
+    }
 
     /// 棋子基类 
     /// </summary> 
@@ -41,6 +52,12 @@ namespace ChineseChess.ChessItems
         {
             get { return _type; }
             set { _type = value; }
+        }
+
+        protected ChessPieceType _pieceType;
+        public ChessPieceType PieceType
+        {
+            get { return _pieceType; }
         }
 
         private bool _isChecked = false;

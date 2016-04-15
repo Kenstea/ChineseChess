@@ -18,7 +18,7 @@ namespace ChineseChess.ChessItems
         }
         public King()
         {
-
+            _pieceType = ChessPieceType.KING;
         }
         public event EventHandler BeRemoved;
         public event EventHandler IsMoved;
