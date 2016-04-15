@@ -67,6 +67,7 @@
       <DependentUpon>Chessboard.cs</DependentUpon>
     </Compile>
     <Compile Include="ChessUtils.cs" />
+    <Compile Include="EngineClient.cs" />
     <Compile Include="IChess.cs" />
     <Compile Include="ChessItems\King.cs">
       <SubType>Component</SubType>

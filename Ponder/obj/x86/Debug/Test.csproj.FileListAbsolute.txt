@@ -1,0 +1,4 @@
+C:\Allen\Projects\MyProjects\C#\ChineseChess\Test\bin\Debug\Test.exe
+C:\Allen\Projects\MyProjects\C#\ChineseChess\Test\bin\Debug\Test.pdb
+C:\Allen\Projects\MyProjects\C#\ChineseChess\Test\obj\x86\Debug\Test.exe
+C:\Allen\Projects\MyProjects\C#\ChineseChess\Test\obj\x86\Debug\Test.pdb

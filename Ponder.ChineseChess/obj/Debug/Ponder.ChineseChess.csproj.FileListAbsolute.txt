@@ -1,0 +1,8 @@
+C:\Allen\Projects Handler\PonderNet-share-20140918\BitBoardBase\bin\Debug\PonderChineseChess.dll
+C:\Allen\Projects Handler\PonderNet-share-20140918\BitBoardBase\bin\Debug\PonderChineseChess.pdb
+C:\Allen\Projects Handler\PonderNet-share-20140918\BitBoardBase\obj\Debug\PonderChineseChess.dll
+C:\Allen\Projects Handler\PonderNet-share-20140918\BitBoardBase\obj\Debug\PonderChineseChess.pdb
+C:\Allen\Projects\MyProjects\C#\ChineseChess\Ponder.ChineseChess\bin\Debug\PonderChineseChess.dll
+C:\Allen\Projects\MyProjects\C#\ChineseChess\Ponder.ChineseChess\bin\Debug\PonderChineseChess.pdb
+C:\Allen\Projects\MyProjects\C#\ChineseChess\Ponder.ChineseChess\obj\Debug\PonderChineseChess.dll
+C:\Allen\Projects\MyProjects\C#\ChineseChess\Ponder.ChineseChess\obj\Debug\PonderChineseChess.pdb
