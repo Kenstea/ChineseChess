@@ -12,7 +12,21 @@ namespace ChineseChess.ChessItems
     {
         public Advisor()
         {
-            _pieceType = ChessPieceType.ADVISOR;
+           
+        }
+        public Advisor(byte theType)
+        {
+            _pieceType = theType;
+            if (_pieceType == 97)
+            {
+                Type = ChessType.Black;
+                Text = "仕";
+            }
+            else
+            {
+                Type = ChessType.Red;
+                Text = "士";
+            }
         }
         public override bool obeyTheLimit(int gridX, int gridY)
         {

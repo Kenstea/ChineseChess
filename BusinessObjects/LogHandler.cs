@@ -71,6 +71,7 @@ namespace BussinessObjects
         {
             this._path = path;
             this._logFileName = logFileName;
+            logging("Starting");
         }
         #endregion
        

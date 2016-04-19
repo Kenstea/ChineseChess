@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
 using ChineseChess.ChessItems;
+using BussinessObjects;
+using BusinessObjects.Ponder;
 
 namespace ChineseChess
 {
     public class EngineClient
     {
         public DataReceivedEventHandler ReceviedEngineData;
-
+        public EventHandler EngineIsOK;
         public static EngineClient DefaultEngineClient
         {
             get
@@ -27,9 +29,14 @@ namespace ChineseChess
         private static EngineClient _defaultEngineClient;
         private Process _ponderEngine =null;
         private string _enginePath;
+        private LogHandler m_LogHandler;
+        private StringBuilder m_engineInfos;
         private EngineClient(string enginePath = "")
         {
-            
+            string sPath = System.Environment.CurrentDirectory;
+            string name = "EngineClientLog";
+            m_LogHandler = new LogHandler(sPath, name);
+            m_engineInfos = new StringBuilder();
             if (!string.IsNullOrEmpty(enginePath))
             {
                 _loadEngine(enginePath);
@@ -72,8 +79,10 @@ namespace ChineseChess
         {
             //_ponderEngine.Close();
             //_ponderEngine.Dispose();
-            _ponderEngine.Kill();
-            _ponderEngine.Dispose();
+            m_LogHandler.logging("Quit");
+            SendCommand("quit");
+            //_ponderEngine.Kill();
+            //_ponderEngine.Dispose();
         }
         public bool changeEngine(string sPath)
         {
@@ -85,32 +94,52 @@ namespace ChineseChess
         {
             SendCommand("ucci");
         }
-        
-        public void SendPositionCommand(System.Windows.Forms.Panel theBoard)
+        public void SendStartPostion()
         {
-            
-            foreach (System.Windows.Forms.Control curItem in theBoard.Controls)
-            {
-                if (curItem is BaseChess)
-                {
-                    BaseChess ci = (BaseChess)curItem;
-                    Type theType = ci.GetType();
-                }
-            }
-            string sCommand = "position ";
+            string sFen = "startpos";
+            SendPositionCommand(sFen);
+        }
+        public void SendPositionCommand(string sFen)
+        {
+            string sCommand = "position fen " + sFen;
             SendCommand(sCommand);
         }
         
         public void SendCommand(string sCommand)
         {
+            m_LogHandler.logging("GUI send Command: " + sCommand);
             _ponderEngine.StandardInput.WriteLine(sCommand);
         }
 
         private void _ponderEngine_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            ReceviedEngineData(this, e);
+            string m_UcciInfo = e.Data;
+            if (!string.IsNullOrEmpty(m_UcciInfo))
+            {
+                m_LogHandler.logging(e.Data);
+                m_engineInfos.Append(m_UcciInfo + "\n");
+                if (m_UcciInfo.Contains("ucciok"))
+                {
+                    EngineIsOK(this, null);
+                }
+            }
+          
+            //ReceviedEngineData(this, e);
+            
+             
         }
-       
+
+        public string EngineInfo
+        {
+            get
+            {
+                return m_engineInfos.ToString();
+            }
+        }
+        public void log(string text)
+        {
+            m_LogHandler.logging(text);
+        }
         private void ExecutePositionCommand(/*UcciCommand cmd*/)
         {
 

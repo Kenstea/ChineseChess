@@ -18,7 +18,21 @@ namespace ChineseChess.ChessItems
         }
         public King()
         {
-            _pieceType = ChessPieceType.KING;
+            
+        }
+        public King(byte theType)
+        {
+            _pieceType = theType;
+            if (_pieceType == 75)
+            {
+                Type = ChessType.Red;
+                Text = "将";
+            }
+            else
+            {
+                Type = ChessType.Black;
+                Text = "帅";
+            }
         }
         public event EventHandler BeRemoved;
         public event EventHandler IsMoved;

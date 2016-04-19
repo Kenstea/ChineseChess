@@ -125,7 +125,7 @@ namespace Ponder.Engine
 
         public EngineStatus ExecuteCommand(string strCommand)
         {
-            PrintDebugInfo("接收到命令：" + strCommand);
+            PrintDebugInfo("receive command：" + strCommand);
 
             UcciCommand cmd = UcciCommand.Parse(strCommand);
 
@@ -184,6 +184,9 @@ namespace Ponder.Engine
                 else
                 {
                     //如果引导状态下UCCI引擎收到其他指令，则可以退出。
+                    info = "quited directly";
+                    m_LogHandler.logging(info);
+                    Output.WriteLine(info);
                     return EngineStatus.Quit;
                 }
             }
@@ -301,7 +304,9 @@ namespace Ponder.Engine
                 {
                     //接收到quit指令后的反馈"bye"。引擎完成了退出运转前的准备工作，通知界面，
                     //引擎将在瞬间正常退出运转。界面收到该指令后，即可关闭输入输出通道。
-                    Output.WriteLine("bye");
+                    info = "bye";
+                    m_LogHandler.logging(info);
+                    Output.WriteLine(info);
                     status = EngineStatus.Quit;
                 }
 

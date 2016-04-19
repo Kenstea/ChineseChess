@@ -12,9 +12,22 @@ namespace ChineseChess.ChessItems
     {
         public Bishop()
         {
-            _pieceType = ChessPieceType.BISHOP;
+           
         }
-
+        public Bishop(byte theType)
+        {
+            _pieceType = theType;
+            if (_pieceType == 98)
+            {
+                Type = ChessType.Black;
+                Text = "象";
+            }
+            else
+            {
+                Type = ChessType.Red;
+                Text = "相";
+            }
+        }
         public override bool obeyTheLimit(int gridX, int gridY)
         {
             if (!base.obeyTheLimit(gridX, gridY))

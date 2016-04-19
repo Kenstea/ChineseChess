@@ -12,7 +12,21 @@ namespace ChineseChess.ChessItems
     {
         public Rook()
         {
-            _pieceType = ChessPieceType.ROOK;
+            
+        }
+        public Rook(byte theType)
+        {
+            _pieceType = theType;
+            if (_pieceType == 114)
+            {
+                Type = ChessType.Black;
+                Text = "車";
+            }
+            else
+            {
+                Type = ChessType.Red;
+                Text = "车";
+            }
         }
         public override bool obeyTheLimit(int gridX, int gridY)
         {

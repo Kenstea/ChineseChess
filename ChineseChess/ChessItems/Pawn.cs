@@ -10,9 +10,23 @@ namespace ChineseChess.ChessItems
     /// </summary>
     public class Pawn : BaseChess
     {
+        public Pawn(byte theType)
+        {
+            _pieceType = theType;
+            if (_pieceType == 112)
+            {
+                Type = ChessType.Black;
+                Text = "卒";
+            }
+            else
+            {
+                Type = ChessType.Red;
+                Text = "兵";
+            }
+        }
         public Pawn()
         {
-            _pieceType = ChessPieceType.PAWN;
+            
         }
         public override bool obeyTheLimit(int gridX, int gridY)
         {
@@ -21,24 +35,55 @@ namespace ChineseChess.ChessItems
             {
                 return false;
             }
-            if (isInOwnSide(gridX, gridY))
+            if (isMoveForwardOneStep(gridX, gridY))
             {
-                if (gridY - GridY == 1 && GridX == gridX)
-                {
-                    return true;
-                }
+                return true;
             }
-            else
+            else if (!isInOwnSide(gridX, gridY) && isHorizontalMoveOneStep(gridX, gridY))
             {
-                if ((gridY - GridY == 1 && GridX == gridX) ||
-                        (Math.Abs(GridX - gridX) == 1 && GridY == gridY))
-                {
-                    return true;
-                }
+                return true;
             }
-
             return isObey;
 
+        }
+        private bool isHorizontalMoveOneStep(int gridX, int gridY)
+        {
+            if ((Math.Abs(GridX - gridX) == 1 && GridY == gridY))
+            {
+                return true;
+            }
+            return false;
+        }
+        private bool isMoveForwardOneStep(int gridX, int gridY)
+        {
+            if (GridX == gridX)
+            {
+                if (ChessUtils.ChessboardDirection == AtackDirection.BlackUpRedDown)
+                {
+                    if (GridY - gridY == 1 && Type == ChessType.Red)
+                    {
+                        return true;
+                    }
+                    else if (gridY - GridY == 1 && Type == ChessType.Black)
+                    {
+                        return true;
+                    }
+
+                }
+                else if (ChessUtils.ChessboardDirection == AtackDirection.RedUpBlackDown)
+                {
+                    if (gridY - GridY == 1 && Type == ChessType.Red)
+                    {
+                        return true;
+                    }
+                    else if (GridY - gridY == 1 && Type == ChessType.Black)
+                    {
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
         }
     }
 }

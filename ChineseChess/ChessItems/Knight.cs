@@ -12,9 +12,22 @@ namespace ChineseChess.ChessItems
     {
         public Knight()
         {
-            _pieceType = ChessPieceType.KNIGHT;
+            
         }
-
+        public Knight(byte theType)
+        {
+            _pieceType = theType;
+            if (_pieceType == 110)
+            {
+                Type = ChessType.Black;
+                Text = "馬";
+            }
+            else
+            {
+                Type = ChessType.Red;
+                Text = "马";
+            }
+        }
         public override bool obeyTheLimit(int gridX, int gridY)
         {
 

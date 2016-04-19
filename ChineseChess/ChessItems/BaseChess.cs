@@ -63,8 +63,8 @@ namespace ChineseChess.ChessItems
             set { _type = value; }
         }
 
-        protected ChessPieceType _pieceType;
-        public ChessPieceType PieceType
+        protected byte _pieceType;
+        public byte PieceType
         {
             get { return _pieceType; }
         }
@@ -218,14 +218,14 @@ namespace ChineseChess.ChessItems
                 {
                     return true;
                 }
-                else if (Type == ChessType.Black && gridY > 5)
+                else if (Type == ChessType.Black && gridY >= 5)
                 {
                     return true;
                 }
             }
             else if (ChessUtils.ChessboardDirection == AtackDirection.BlackUpRedDown)
             {
-                if (Type == ChessType.Red && gridY > 5)
+                if (Type == ChessType.Red && gridY >= 5)
                 {
                     return true;
                 }

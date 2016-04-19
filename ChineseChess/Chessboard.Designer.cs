@@ -40,8 +40,11 @@
             this.TypeStatusLabel = new System.Windows.Forms.Label();
             this.UndoButton = new System.Windows.Forms.Button();
             this.dangerLabel = new System.Windows.Forms.Label();
-            this.EngineInfoText = new System.Windows.Forms.RichTextBox();
             this.TestButton = new System.Windows.Forms.Button();
+            this.EngineInfoText = new System.Windows.Forms.RichTextBox();
+            this.RedRadioButton = new System.Windows.Forms.RadioButton();
+            this.BlackRadioButton = new System.Windows.Forms.RadioButton();
+            this.PlayerTypeLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // panel1
@@ -69,6 +72,7 @@
             // timer1
             // 
             this.timer1.Enabled = true;
+            this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // XLabel
@@ -111,20 +115,21 @@
             // 
             this.TypeStatus.AutoSize = true;
             this.TypeStatus.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TypeStatus.Location = new System.Drawing.Point(822, 153);
+            this.TypeStatus.Location = new System.Drawing.Point(708, 118);
             this.TypeStatus.Name = "TypeStatus";
-            this.TypeStatus.Size = new System.Drawing.Size(0, 24);
+            this.TypeStatus.Size = new System.Drawing.Size(48, 24);
             this.TypeStatus.TabIndex = 4;
+            this.TypeStatus.Text = "红方";
             // 
             // TypeStatusLabel
             // 
             this.TypeStatusLabel.AutoSize = true;
             this.TypeStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TypeStatusLabel.Location = new System.Drawing.Point(686, 43);
+            this.TypeStatusLabel.Location = new System.Drawing.Point(767, 118);
             this.TypeStatusLabel.Name = "TypeStatusLabel";
-            this.TypeStatusLabel.Size = new System.Drawing.Size(108, 24);
+            this.TypeStatusLabel.Size = new System.Drawing.Size(48, 24);
             this.TypeStatusLabel.TabIndex = 2;
-            this.TypeStatusLabel.Text = "Type Status";
+            this.TypeStatusLabel.Text = "着棋";
             // 
             // UndoButton
             // 
@@ -150,14 +155,6 @@
             this.dangerLabel.Text = "    将！  ";
             this.dangerLabel.Visible = false;
             // 
-            // EngineInfoText
-            // 
-            this.EngineInfoText.Location = new System.Drawing.Point(690, 119);
-            this.EngineInfoText.Name = "EngineInfoText";
-            this.EngineInfoText.Size = new System.Drawing.Size(238, 180);
-            this.EngineInfoText.TabIndex = 8;
-            this.EngineInfoText.Text = "";
-            // 
             // TestButton
             // 
             this.TestButton.Location = new System.Drawing.Point(923, 332);
@@ -168,13 +165,57 @@
             this.TestButton.UseVisualStyleBackColor = true;
             this.TestButton.Click += new System.EventHandler(this.TestButton_Click);
             // 
+            // EngineInfoText
+            // 
+            this.EngineInfoText.Location = new System.Drawing.Point(857, 101);
+            this.EngineInfoText.Name = "EngineInfoText";
+            this.EngineInfoText.Size = new System.Drawing.Size(191, 185);
+            this.EngineInfoText.TabIndex = 10;
+            this.EngineInfoText.Text = "";
+            // 
+            // RedRadioButton
+            // 
+            this.RedRadioButton.AutoSize = true;
+            this.RedRadioButton.Checked = true;
+            this.RedRadioButton.Location = new System.Drawing.Point(872, 45);
+            this.RedRadioButton.Name = "RedRadioButton";
+            this.RedRadioButton.Size = new System.Drawing.Size(49, 17);
+            this.RedRadioButton.TabIndex = 11;
+            this.RedRadioButton.TabStop = true;
+            this.RedRadioButton.Text = "红子";
+            this.RedRadioButton.UseVisualStyleBackColor = true;
+            this.RedRadioButton.CheckedChanged += new System.EventHandler(this.RedRadioButton_CheckedChanged);
+            // 
+            // BlackRadioButton
+            // 
+            this.BlackRadioButton.AutoSize = true;
+            this.BlackRadioButton.Location = new System.Drawing.Point(927, 45);
+            this.BlackRadioButton.Name = "BlackRadioButton";
+            this.BlackRadioButton.Size = new System.Drawing.Size(49, 17);
+            this.BlackRadioButton.TabIndex = 12;
+            this.BlackRadioButton.Text = "黑棋";
+            this.BlackRadioButton.UseVisualStyleBackColor = true;
+            this.BlackRadioButton.CheckedChanged += new System.EventHandler(this.BlackRadioButton_CheckedChanged);
+            // 
+            // PlayerTypeLabel
+            // 
+            this.PlayerTypeLabel.AutoSize = true;
+            this.PlayerTypeLabel.Location = new System.Drawing.Point(793, 47);
+            this.PlayerTypeLabel.Name = "PlayerTypeLabel";
+            this.PlayerTypeLabel.Size = new System.Drawing.Size(55, 13);
+            this.PlayerTypeLabel.TabIndex = 13;
+            this.PlayerTypeLabel.Text = "玩家类型";
+            // 
             // Chessboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1114, 635);
-            this.Controls.Add(this.TestButton);
+            this.Controls.Add(this.PlayerTypeLabel);
+            this.Controls.Add(this.BlackRadioButton);
+            this.Controls.Add(this.RedRadioButton);
             this.Controls.Add(this.EngineInfoText);
+            this.Controls.Add(this.TestButton);
             this.Controls.Add(this.dangerLabel);
             this.Controls.Add(this.UndoButton);
             this.Controls.Add(this.TypeStatus);
@@ -209,8 +250,11 @@
         private System.Windows.Forms.Label TypeStatusLabel;
         private System.Windows.Forms.Button UndoButton;
         private System.Windows.Forms.Label dangerLabel;
-        private System.Windows.Forms.RichTextBox EngineInfoText;
         private System.Windows.Forms.Button TestButton;
+        private System.Windows.Forms.RichTextBox EngineInfoText;
+        private System.Windows.Forms.RadioButton RedRadioButton;
+        private System.Windows.Forms.RadioButton BlackRadioButton;
+        private System.Windows.Forms.Label PlayerTypeLabel;
 
 
 

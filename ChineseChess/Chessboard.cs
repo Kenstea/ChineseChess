@@ -23,7 +23,8 @@ namespace ChineseChess
     public enum InfoType
     {
         ShowDangerInfo,
-        ShowEngineInfo
+        ShowEngineInfo,
+        InitializeChessBoard
     }
     //|------------------------------------------------------------------------------|
     //|                                                                              |
@@ -55,10 +56,19 @@ namespace ChineseChess
         //private List<BaseChess> _chessPieces = new List<BaseChess>();
 
         private EngineClient _theEngineClient = null;
-        public byte[,] chessArray = new byte[10, 9];
+        public byte[,] chessArray = new byte[chessRow, chessCol];
         private string fen = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1";
-        private string m_UcciCommand;
+        private string moves = "";
+        private int m_nNoOfMoves = 0;
+        private bool m_bMoveStep = false;
+        private string m_UcciInfo;
         private InfoType m_InfoType;
+
+        private ChessType m_PlayerType;
+        private ChessType m_EngineType;
+
+        private int m_IndexX = 0;
+        private int m_IndexY = 0;
         //public List<BaseChess> ChessPieces
         //{
         //    get { return _chessPieces; }
@@ -67,6 +77,7 @@ namespace ChineseChess
         public Chessboard()
         {
             InitializeComponent();
+            //Control.CheckForIllegalCrossThreadCalls = false;
         }
         private void drawChessBoard()
         {
@@ -344,8 +355,12 @@ namespace ChineseChess
             //_previousChess.Disposed += new EventHandler(_previousChess_Disposed);
 
             _theEngineClient = EngineClient.DefaultEngineClient;
-            _theEngineClient.ReceviedEngineData += new DataReceivedEventHandler(_theEngineClient_ReceviedEngineData);
-            //_theEngineClient.SendUcciCommand();
+            //_theEngineClient.ReceviedEngineData += new DataReceivedEventHandler(_theEngineClient_ReceviedEngineData);
+            
+            //default
+            m_PlayerType = ChessType.Red;
+            m_EngineType = ChessType.Black;
+            //
         }
 
         private void _previousChess_Disposed(object sender, EventArgs e)
@@ -353,13 +368,52 @@ namespace ChineseChess
 
         }
 
-        private void _theEngineClient_ReceviedEngineData(object sender, DataReceivedEventArgs e)
+        private void _updateMovesStep(string move,bool isRemove=false)
         {
-            m_UcciCommand = e.Data;
-            m_InfoType = InfoType.ShowEngineInfo;
-            threadPro();
-           
+
+            if (!m_bMoveStep)
+            {
+                if (isRemove)
+                {
+                    moves = "";
+                }
+                else
+                {
+                    moves = "moves ";
+                    moves += move;
+                }
+                m_bMoveStep = true;
+               
+                m_nNoOfMoves++;
+            }
+            else
+            {
+                if (!isRemove)
+                {
+                    moves += " " + move;
+                }
+                m_bMoveStep = false;
+               
+            }
         }
+        //private void _theEngineClient_ReceviedEngineData(object sender, DataReceivedEventArgs e)
+        //{
+        //    m_UcciInfo = e.Data;
+           
+        //    _theEngineClient.log(m_UcciInfo);
+
+        //    //m_InfoType = InfoType.ShowEngineInfo;
+        //    //threadPro();
+           
+        //}
+
+        private void _theEngineClient_EngineIsOK(object sender, EventArgs e)
+        {
+            m_InfoType = InfoType.InitializeChessBoard;
+            threadPro();
+            _theEngineClient.SendStartPostion();
+        }
+
         private void threadPro()
         {
             int id = System.Threading.Thread.CurrentThread.ManagedThreadId;
@@ -376,24 +430,37 @@ namespace ChineseChess
             {
                 showEngineInfo();
             }
+            else if (m_InfoType == InfoType.InitializeChessBoard)
+            {
+                initializeChessboard();
+            }
            
 
         }
+        private void initializeChessboard()
+        {
+            _changeType(true);
+            loadChessPieces(fen);
+            StartButton.Enabled = false;
+        }
+       
 
         private void showEngineInfo()
         {
-            if (!string.IsNullOrEmpty(m_UcciCommand))
-            {
-                EngineInfoText.Text += m_UcciCommand+ "\n";
-            }
+            EngineInfoText.Text = _theEngineClient.EngineInfo;
+            //if (!string.IsNullOrEmpty(m_engineInfos.ToString()))
+            //{
+            //    EngineInfoText.Text = m_engineInfos.ToString() + "\n";
+            //}
         }
-        private int m_IndexX = 0;
-        private int m_IndexY = 0;
+      
 
         private void loadChessPieces(string fen)
         {
             string chessBoard;
             string[] chessArr = fen.Split(' ');
+            m_IndexX = 0;
+            m_IndexY = 0;
             if (chessArr.Length<1)
             {
                 return;
@@ -443,17 +510,8 @@ namespace ChineseChess
                 case 82:
                 case 114:
                     //车
-                    Rook ju1 = new Rook();
-                    if (theChessType == 114)
-                    {
-                        ju1.Type = ChessType.Black;
-                        ju1.Text = "車";
-                    }
-                    else
-                    {
-                        ju1.Type = ChessType.Red;
-                        ju1.Text = "车";
-                    }
+                    Rook ju1 = new Rook(theChessType);
+                    
                     ju1.GridX = m_IndexX;
                     ju1.GridY = m_IndexY;
                     ju1.PreviousGridX = m_IndexX;
@@ -465,17 +523,7 @@ namespace ChineseChess
                 case 78:
                 case 110:
                     //马
-                    Knight ma = new Knight();
-                    if (theChessType == 110)
-                    {
-                        ma.Type = ChessType.Black;
-                        ma.Text = "馬";
-                    }
-                    else
-                    {
-                        ma.Type = ChessType.Red;
-                        ma.Text = "马";
-                    }
+                    Knight ma = new Knight(theChessType);
                     ma.GridX = m_IndexX;
                     ma.GridY = m_IndexY;
                     ma.PreviousGridX = m_IndexX;
@@ -488,17 +536,7 @@ namespace ChineseChess
                 case 66:
                 case 98:
                     //象
-                    Bishop xiang = new Bishop();
-                    if (theChessType == 98)
-                    {
-                        xiang.Type = ChessType.Black;
-                        xiang.Text = "象";
-                    }
-                    else
-                    {
-                        xiang.Type = ChessType.Red;
-                        xiang.Text = "相";
-                    }
+                    Bishop xiang = new Bishop(theChessType);
                     xiang.GridX = m_IndexX;
                     xiang.GridY = m_IndexY;
                     xiang.PreviousGridX = m_IndexX;
@@ -512,17 +550,7 @@ namespace ChineseChess
                 case 65:
                 case 97:
                     //士
-                    Advisor shi = new Advisor();
-                    if (theChessType == 97)
-                    {
-                        shi.Type = ChessType.Black;
-                        shi.Text = "仕";
-                    }
-                    else
-                    {
-                        shi.Type = ChessType.Red;
-                        shi.Text = "士";
-                    }
+                    Advisor shi = new Advisor(theChessType);
                     shi.GridX = m_IndexX;
                     shi.GridY = m_IndexY;
                     shi.PreviousGridX = m_IndexX;
@@ -534,13 +562,13 @@ namespace ChineseChess
                     break;
                 case 75:
                     //将
-                    jiang = new King();
-                    jiang.Type = ChessType.Red;
+                    jiang = new King(theChessType);
+                    
                     jiang.GridX = m_IndexX;
                     jiang.GridY = m_IndexY;
                     jiang.PreviousGridX = m_IndexX;
                     jiang.PreviousGridY = m_IndexY;
-                    jiang.Text = "将";
+                   
                     jiang.InitChess();
                     this.panel1.Controls.Add(jiang);
                     jiang.MouseClick += new MouseEventHandler(chessItem_MouseClick);
@@ -550,13 +578,12 @@ namespace ChineseChess
                     break;
                 case 107:
                     //帅
-                    shuai = new King();
-                    shuai.Type = ChessType.Black;
+                    shuai = new King(theChessType);
+                    
                     shuai.GridX = m_IndexX;
                     shuai.GridY = m_IndexY;
                     shuai.PreviousGridX = m_IndexX;
                     shuai.PreviousGridY = m_IndexY;
-                    shuai.Text = "帅";
                     shuai.InitChess();
                     this.panel1.Controls.Add(shuai);
                     shuai.MouseClick += new MouseEventHandler(chessItem_MouseClick);
@@ -567,18 +594,8 @@ namespace ChineseChess
                 case 67:
                 case 99:
                     //炮
-                    Cannon pao = new Cannon();
-                    if (theChessType == 99)
-                    {
-                        pao.Type = ChessType.Black;
-
-                    }
-                    else
-                    {
-                        pao.Type = ChessType.Red;
-
-                    }
-                    pao.Text = "炮";
+                    Cannon pao = new Cannon(theChessType);
+                   
                     pao.GridX = m_IndexX;
                     pao.GridY = m_IndexY;
                     pao.PreviousGridX = m_IndexX;
@@ -592,17 +609,8 @@ namespace ChineseChess
                 case 80:
                 case 112:
                     //兵
-                    Pawn bing = new Pawn();
-                    if (theChessType == 112)
-                    {
-                        bing.Type = ChessType.Black;
-                        bing.Text = "卒";
-                    }
-                    else
-                    {
-                        bing.Type = ChessType.Red;
-                        bing.Text = "兵";
-                    }
+                    Pawn bing = new Pawn(theChessType);
+                   
                     bing.GridX = m_IndexX;
                     bing.GridY = m_IndexY;
                     bing.PreviousGridX = m_IndexX;
@@ -828,7 +836,6 @@ namespace ChineseChess
                 bing.MouseClick += new MouseEventHandler(chessItem_MouseClick);
                 chessArray[6, i] = (byte)bing.PieceType;
             }
-            StartButton.Enabled = false;
             #endregion
         }
         private void StartButton_Click(object sender, EventArgs e)
@@ -837,35 +844,25 @@ namespace ChineseChess
             this.panel1.Controls.Clear();
             timer1.Enabled = true;
             timer1.Start();
-            _changeType(true);
-            //_currentActionType = ChessType.Red;
-            //TypeStatus.Text = Enum.GetName(typeof(ChessType), _currentActionType);
-            loadChessPieces(fen);
+            _theEngineClient.SendUcciCommand();
+            _theEngineClient.EngineIsOK += new EventHandler(_theEngineClient_EngineIsOK);
             
 
         }
-
-        private void chessItem_MouseClick(object sender, EventArgs e)
+        private void chessItemSelected(BaseChess theChessPiece)
         {
-            BaseChess _tempChess = (BaseChess)sender;
-            //if (_selectChess != null && _tempChess != _selectChess)
-            //{
-            //    _selectChess.IsChecked = false;
-            //}
-
-
             if (_selectChess == null)
             {
                 //第一次选择棋子
-                if (_tempChess.Type == _currentActionType)
+                if (theChessPiece.Type == _currentActionType)
                 {
-                    _selectChess = _tempChess;
+                    _selectChess = theChessPiece;
                     //_previousChess = _selectChess;
                 }
                 else
                 {
                     //选择错了棋子
-                    _tempChess.IsChecked = false;
+                    theChessPiece.IsChecked = false;
                 }
 
 
@@ -873,16 +870,25 @@ namespace ChineseChess
             else
             {
                 //已经选择了一个棋子，再次选择时是对方棋子
-                if (_tempChess.Type != _currentActionType)
+                if (theChessPiece.Type != _currentActionType)
                 {
-                    BaseChess beAttackChess = (BaseChess)sender;
+                    BaseChess beAttackChess = theChessPiece;
                     if (_selectChess.move(beAttackChess.Location))
                     {
-                        chessArray[_selectChess.GridX, _selectChess.GridY] = (byte)_selectChess.PieceType;
-                        chessArray[beAttackChess.GridX, beAttackChess.GridY] = 0;
+                        chessArray[_selectChess.GridY, _selectChess.GridX] = (byte)_selectChess.PieceType;
+                        chessArray[beAttackChess.GridY, beAttackChess.GridX] = 0;
                         _previousOppositeChess = beAttackChess.Clone();
                         beAttackChess.remove();
+                        string move = ChessUtils.getMoveString(_selectChess.GridX, _selectChess.GridY, _selectChess.PreviousGridX, _selectChess.PreviousGridY);
+                        _updateMovesStep(move,true);
+                        _updatePostionStr();
+                        _sendPositionCommand();
                         doSomeAfterMove();
+                    }
+                    else
+                    {
+                        //不遵循着法
+                        beAttackChess.IsChecked = false;
                     }
 
                 }
@@ -891,10 +897,24 @@ namespace ChineseChess
                     //如果再次选择时还是己方棋子,更改check状态
                     _selectChess.IsChecked = false;
                     //更换当前引用
-                    _selectChess = _tempChess;
+                    _selectChess = theChessPiece;
 
                 }
             }
+        }
+        private void chessItem_MouseClick(object sender, EventArgs e)
+        {
+            BaseChess _tempChess = (BaseChess)sender;
+            //if (_selectChess != null && _tempChess != _selectChess)
+            //{
+            //    _selectChess.IsChecked = false;
+            //}
+            if (_tempChess.Type == m_EngineType)
+            {
+                return;
+            }
+            chessItemSelected(_tempChess);
+            
 
             //else
             //{
@@ -1023,6 +1043,9 @@ namespace ChineseChess
 
         }
 
+        /// <summary>
+        /// to do
+        /// </summary>
         private void _updatePositionToEngine()
         {
 
@@ -1060,53 +1083,36 @@ namespace ChineseChess
 
         private void panel1_MouseDown(object sender, MouseEventArgs e)
         {
+            if (_selectChess != null && _selectChess.Type != m_EngineType)
+            {
+                chessMove(e.Location);
+            }
+        }
+
+        private void chessMove(Point newLocation)
+        {
             if (_selectChess != null && _selectChess.Type == _currentActionType)
             {
-                if (_selectChess.move(e.Location))
+                if (_selectChess.move(newLocation))
                 {
                     //_selectChess.IsChecked = false;
-                    chessArray[_selectChess.GridX, _selectChess.GridY] = (byte)_selectChess.PieceType;
+                    chessArray[_selectChess.GridY, _selectChess.GridX] = (byte)_selectChess.PieceType;
+                    string move = ChessUtils.getMoveString(_selectChess.GridX, _selectChess.GridY, _selectChess.PreviousGridX, _selectChess.PreviousGridY);
+                    _updateMovesStep(move);
+                    _sendPositionCommand();
                     doSomeAfterMove();
                 }
             }
         }
-        //private void createDangerLabel()
-        //{
-        //    dangerLabel = new Label();
-        //    dangerLabel.Text = "  将!  ";
-        //    dangerLabel.ForeColor = Color.Red;
-        //    dangerLabel.BackColor = Color.Sienna;
-        //    //设置相关属性
-        //    dangerLabel.Width = 60;
-        //    dangerLabel.Height = 60;
-        //    dangerLabel.TextAlign = ContentAlignment.MiddleCenter;
-        //    dangerLabel.Font = new System.Drawing.Font("黑体", 30F, FontStyle.Bold);
-        //    dangerLabel.Location = new Point(720,80);
-
-        //    dangerLabel.AutoSize = true;
-        //    //this.label1.Location = new System.Drawing.Point(752, 200);
-        //    dangerLabel.Name = "dangerLabel";
-        //    //dangerLabel.Size = new System.Drawing.Size(60, 100);
-        //    //this.label1.TabIndex = 6;
-        //    //this.label1.Text = "label1";
-
-        //    this.Controls.Add(dangerLabel);
-        //    dangerLabel.Visible = false;
-        //}
-
-        //Label dangerLabel;
+       
         private void showDangerInfo()
         {
             dangerLabel.Visible = true;
-            //System.Threading.Thread.Sleep(1500);
+            
 
 
         }
-        //private void threadPro()
-        //{
-        //    MethodInvoker MethInvo = new MethodInvoker(showDangerInfo);
-        //    BeginInvoke(MethInvo);
-        //}
+      
 
         private void doSomeAfterMove()
         {
@@ -1117,11 +1123,65 @@ namespace ChineseChess
             {
                 dangerLabel.Visible = false;
             }
-
+            string move="";
+            
             UndoButton.Enabled = true;
             _previousChess = _selectChess;
             _selectChess.IsChecked = false;
             _selectChess = null;
+        }
+
+        private void _sendPositionCommand()
+        {
+            StringBuilder cmd = new StringBuilder();
+            string[] strArr = fen.Split(' ');
+            if (strArr.Length<1)
+            {
+                cmd.Append(fen);
+            }
+            else
+            {
+                cmd.Append(strArr[0]);
+            }
+            char theType = ChessUtils.getTypeForUcci((int)_currentActionType);
+            cmd.Append(" " + theType + " - - 0 ");
+            cmd.Append(m_nNoOfMoves.ToString()+" ");
+            cmd.Append(moves);
+            fen = cmd.ToString();
+            _theEngineClient.SendPositionCommand(fen);
+
+        }
+        private void _updatePostionStr()
+        {
+            char theChar;
+            string temp = "";
+            int countOfEmpty = 0;
+            //行
+            for (m_IndexY = 0; m_IndexY < chessRow; m_IndexY++)
+            {
+                //列
+                for (m_IndexX = 0; m_IndexX < chessCol; m_IndexX++)
+                {
+                    byte curWord = chessArray[m_IndexY, m_IndexX];
+                    if (curWord == 0)
+                    {
+                        countOfEmpty++;
+                    }
+                    else if ((curWord >= 65 && curWord <= 90) || (curWord >= 97 && curWord <= 122))
+                    {
+                        if (countOfEmpty>0)
+                        {
+                            temp += countOfEmpty;
+                            countOfEmpty = 0;
+                        }
+                        theChar = (char)curWord;
+                        temp += theChar;
+                    }
+                }
+                theChar = '/';
+                temp += theChar;
+            }
+            fen = temp;
         }
 
         private ChessType _getOppositeType(ChessType currentType)
@@ -1183,7 +1243,7 @@ namespace ChineseChess
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-
+            showEngineInfo();
         }
 
         private void Chessboard_FormClosing(object sender, FormClosingEventArgs e)
@@ -1195,10 +1255,19 @@ namespace ChineseChess
         {
             _theEngineClient.SendUcciCommand();
         }
-        //private void Chessboard_Resize(object sender, EventArgs e)
-        //{
-        //    drawChessBoard();
-        //}
+
+        private void RedRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            m_PlayerType = ChessType.Red;
+            m_EngineType = ChessType.Black;
+        }
+
+        private void BlackRadioButton_CheckedChanged(object sender, EventArgs e)
+        {
+            m_PlayerType = ChessType.Black;
+            m_EngineType = ChessType.Red;
+        }
+       
 
 
 
