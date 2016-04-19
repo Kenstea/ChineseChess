@@ -22,7 +22,7 @@ namespace ChineseChess
                 max = val1;
             }
         }
-
+        public static AtackDirection ChessboardDirection = AtackDirection.BlackUpRedDown;
        
     }
 }

@@ -6,6 +6,7 @@ using System.IO;
 
 using Ponder.ChineseChess;
 using BusinessObjects.Ponder;
+using BussinessObjects;
 
 namespace Ponder.Engine
 {
@@ -74,9 +75,9 @@ namespace Ponder.Engine
         private bool isDebug;
         private string fen;
         private string moves;
-
+        private LogHandler m_LogHandler;
         public long timeLimit;
-
+        private string info;
         private string m_OutputMessage;
         private string inputMesaage = "";
 
@@ -86,7 +87,9 @@ namespace Ponder.Engine
         /// </summary>
         public PonderEngine() : this(Console.Out)
         {
-
+            string sPath = System.Environment.CurrentDirectory;
+            string name = "EngineLog";
+            m_LogHandler = new LogHandler(sPath, name);
         }
 
 
@@ -135,10 +138,21 @@ namespace Ponder.Engine
                     //id copyright 2004-2006 www.xqbase.com，说明引擎的版权
                     //id author Morning Yellow，说明引擎的作者
                     //id user ElephantEye Test Team，说明引擎授权给用户
-                    Output.WriteLine("id name PonderEngine " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
-                    Output.WriteLine("id copyright 2013 by slb");
-                    Output.WriteLine("id author shen longbin");
-                    Output.WriteLine("id user slb test");
+                    info = "id name PonderEngine " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+                    m_LogHandler.logging(info);
+                    Output.WriteLine(info);
+
+                    info = "id copyright 2013 by slb";
+                    m_LogHandler.logging(info);
+                    Output.WriteLine(info);
+
+                    info = "id author shen longbin";
+                    m_LogHandler.logging(info);
+                    Output.WriteLine(info);
+
+                    info = "id user slb test";
+                    m_LogHandler.logging(info);
+                    Output.WriteLine(info);
 
                     // TODO: 给出支持option选项
                     // option <选项> type <类型> [min <最小值>] [max <最大值>] 
@@ -149,13 +163,22 @@ namespace Ponder.Engine
                     //option usemillisec type check default false 
                     //option usebook type check default true 
                     //引导状态的反馈，此后引擎进入空闲状态。
-                    Output.WriteLine("option usebook type check default true");
-                    Output.WriteLine("option bookfiles type string default " + "opening.ob");
+                    info = "option usebook type check default true";
+                    m_LogHandler.logging(info);
+                    Output.WriteLine(info);
+
+
+                    info = "option bookfiles type string default " + "opening.ob";
+                    m_LogHandler.logging(info);
+                    Output.WriteLine(info);
 
                     // 这里完成一些初始化的任务
                     transpositionTable = new TranspositionTable();
 
-                    Output.WriteLine("ucciok");
+                    info = "ucciok";
+                    m_LogHandler.logging(info);
+                    Output.WriteLine(info);
+
                     status = EngineStatus.Idle;
                 }
                 else

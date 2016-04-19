@@ -19,6 +19,12 @@ namespace ChineseChess
         RightPart = 3,
         LeftPart = 4
     }
+
+    public enum InfoType
+    {
+        ShowDangerInfo,
+        ShowEngineInfo
+    }
     //|------------------------------------------------------------------------------|
     //|                                                                              |
     //|------------------------------------------------------------------------------|
@@ -35,8 +41,8 @@ namespace ChineseChess
         Pen p;
         private int iniX = 60;
         private int iniY = 60;
-        private const int chessRow = 9;
-        private const int chessCol = 8;
+        private const int chessRow = 10;
+        private const int chessCol = 9;
         private static int _pieceWidth = 60;
         private ChessType _currentActionType = ChessType.Red;
         private BaseChess _selectChess;
@@ -50,7 +56,9 @@ namespace ChineseChess
 
         private EngineClient _theEngineClient = null;
         public byte[,] chessArray = new byte[10, 9];
-
+        private string fen = "rnbakabnr/9/1c5c1/p1p1p1p1p/9/9/P1P1P1P1P/1C5C1/9/RNBAKABNR w - - 0 1";
+        private string m_UcciCommand;
+        private InfoType m_InfoType;
         //public List<BaseChess> ChessPieces
         //{
         //    get { return _chessPieces; }
@@ -73,9 +81,9 @@ namespace ChineseChess
             iniY = 30;
 
             leftTopPoint = new Point(iniX, iniY);
-            leftBottomPoint = new Point(iniX, iniY + _pieceWidth * chessRow);
-            rightTopPoint = new Point(iniX + _pieceWidth * chessCol, iniY);
-            rightBottomPoint = new Point(iniX + _pieceWidth * chessCol, iniY + _pieceWidth * chessRow);
+            leftBottomPoint = new Point(iniX, iniY + _pieceWidth * (chessRow - 1));
+            rightTopPoint = new Point(iniX + _pieceWidth * (chessCol - 1), iniY);
+            rightBottomPoint = new Point(iniX + _pieceWidth * (chessCol - 1), iniY + _pieceWidth * (chessRow - 1));
             //this.panel1.Width = iniY + _pieceWidth * chessRow + 50;
             //this.panel1.Height = screenHeight;
 
@@ -88,7 +96,7 @@ namespace ChineseChess
             y1 = leftTopPoint.Y;
             x2 = rightTopPoint.X;
             y2 = rightTopPoint.Y;
-            for (int i = 0; i <= chessRow; i++)
+            for (int i = 0; i < chessRow; i++)
             {
                 g.DrawLine(p, x1, y1, x2, y2);
                 y1 += _pieceWidth;
@@ -102,7 +110,7 @@ namespace ChineseChess
             y1 = leftTopPoint.Y;
             x2 = x1;
             y2 = y1 + _pieceWidth * 4;
-            for (int i = 1; i < chessCol; i++)
+            for (int i = 1; i < chessCol - 1; i++)
             {
                 g.DrawLine(p, x1, y1, x2, y2);
                 x1 += _pieceWidth;
@@ -113,7 +121,7 @@ namespace ChineseChess
             y1 = leftBottomPoint.Y;
             x2 = leftBottomPoint.X;
             y2 = leftBottomPoint.Y - _pieceWidth * 4;
-            for (int i = 1; i < chessRow; i++)
+            for (int i = 1; i < chessRow - 1; i++)
             {
                 g.DrawLine(p, x1, y1, x2, y2);
                 x1 += _pieceWidth;
@@ -193,19 +201,14 @@ namespace ChineseChess
             y1 = rightBottomPoint.Y - _pieceWidth * 2;
             drawPostion(x1, y1);
 
-            ////"楚河","汉界"字
-            //FontFamily fm = new FontFamily("黑体");
-            //Font f = new Font(fm, 30);
-            //StringFormat sf = new StringFormat();
-            //sf.Alignment = StringAlignment.Near;
-            //g.DrawString("楚", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 1.3), sf);
-            //g.DrawString("河", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 2.3), sf);
-
-            //g.DrawString("汉", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 4.3), sf);
-            //g.DrawString("界", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 4.1), (float)(leftTopPoint.Y + _pieceWidth * 5.3), sf);
-            //g.DrawString("", f, Brushes.Black, leftTopPoint.X + _pieceWidth * 5, leftTopPoint.Y + _pieceWidth * 4, sf);
-            //f.Dispose();
-
+            //"楚河","汉界"字
+            FontFamily fm = new FontFamily("黑体");
+            Font f = new Font(fm, 30);
+            StringFormat sf = new StringFormat();
+            sf.Alignment = StringAlignment.Near;
+            g.DrawString("楚河", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 1.5), (float)(leftTopPoint.Y + _pieceWidth * 4.1), sf);
+            g.DrawString("汉界", f, Brushes.Black, (float)(leftTopPoint.X + _pieceWidth * 5.1), (float)(leftTopPoint.Y + _pieceWidth * 4.1), sf);
+            f.Dispose();
 
             //draw the frame
             //p = new Pen(Color.Black, 10);
@@ -215,25 +218,7 @@ namespace ChineseChess
             //g.DrawLine(p, rightTopPoint.X + 10, rightTopPoint.Y - 15, rightBottomPoint.X + 10, rightBottomPoint.Y + 15);
             //------------------------
             g.Dispose();
-            //g.DrawLine(p, point.X, point.Y, point.X, point.Y + wei * 9);
-            //g.DrawLine(p, point.X + wei * 8, point.Y, point.X + wei * 8, point.Y + wei * 9);
 
-            ////上半边的竖向线
-            //for (int i = 1; i <= 7; i++)
-            //{
-            //    g.DrawLine(p, point.X + wei * i, point.Y, point.X + wei * i, point.Y + wei * 4);
-            //}
-            ////下半边的竖向线
-            //for (int i = 1; i <= 7; i++)
-            //{
-            //    g.DrawLine(p, point.X + wei * i, point.Y + wei * 5, point.X + wei * i, point.Y + wei * 9);
-            //}
-            ////两边的交叉线
-            //g.DrawLine(p, point.X + wei * 3, point.Y, point.X + wei * 5, point.Y + wei * 2);
-            //g.DrawLine(p, point.X + wei * 5, point.Y, point.X + wei * 3, point.Y + wei * 2);
-
-            //g.DrawLine(p, point.X + wei * 3, point.Y + wei * 9, point.X + wei * 5, point.Y + wei * 7);
-            //g.DrawLine(p, point.X + wei * 5, point.Y + wei * 9, point.X + wei * 3, point.X + wei * 7);
         }
 
         private void _changeType(bool isReset = false)
@@ -360,6 +345,7 @@ namespace ChineseChess
 
             _theEngineClient = EngineClient.DefaultEngineClient;
             _theEngineClient.ReceviedEngineData += new DataReceivedEventHandler(_theEngineClient_ReceviedEngineData);
+            //_theEngineClient.SendUcciCommand();
         }
 
         private void _previousChess_Disposed(object sender, EventArgs e)
@@ -369,106 +355,273 @@ namespace ChineseChess
 
         private void _theEngineClient_ReceviedEngineData(object sender, DataReceivedEventArgs e)
         {
+            m_UcciCommand = e.Data;
+            m_InfoType = InfoType.ShowEngineInfo;
+            threadPro();
+           
+        }
+        private void threadPro()
+        {
+            int id = System.Threading.Thread.CurrentThread.ManagedThreadId;
+            MethodInvoker MethInvo = new MethodInvoker(updateMessage);
+            BeginInvoke(MethInvo);
+        }
+        private void updateMessage()
+        {
+            if (m_InfoType == InfoType.ShowDangerInfo)
+            {
+                showDangerInfo();
+            }
+            else if (m_InfoType == InfoType.ShowEngineInfo)
+            {
+                showEngineInfo();
+            }
+           
 
         }
 
-        //public BaseChess hasChessOnPoint(int gridX, int gridY)
-        //{
-        //    BaseChess theChess = null;
-        //    foreach (BaseChess curChess in _chessPieces)
-        //    {
-        //        if (curChess.GridX == gridX && curChess.GridY == gridY)
-        //        {
-        //            theChess = curChess;
-        //        }
-        //    }
+        private void showEngineInfo()
+        {
+            if (!string.IsNullOrEmpty(m_UcciCommand))
+            {
+                EngineInfoText.Text += m_UcciCommand+ "\n";
+            }
+        }
+        private int m_IndexX = 0;
+        private int m_IndexY = 0;
 
-        //    return theChess;
+        private void loadChessPieces(string fen)
+        {
+            string chessBoard;
+            string[] chessArr = fen.Split(' ');
+            if (chessArr.Length<1)
+            {
+                return;
+            }
+            else
+            {
+                chessBoard = chessArr[0];
+            }
+            foreach (char curWord in chessBoard)
+            {
+                if (curWord >= 49 && curWord <= 57)
+                {
+                    m_IndexX += charToNum(curWord);
+                }
+                else if ((curWord >= 65 && curWord <= 90) || (curWord >= 97 && curWord <= 122))
+                {
+                    //red
+                    createPiece((byte)curWord);
+                }
+                else if (curWord == 47)
+                {
+                    m_IndexX = 0;
+                    m_IndexY++;
+                }
+            }
 
-        //}
-        //public List<BaseChess> hasChessBetweenPointsInLine(Point pointA, Point pointB)
-        //{
-        //    List<BaseChess> theList = new List<BaseChess>();
-        //    bool isInVerticalline = (pointA.X ==pointB.X);
-        //    if (pointA.X ==pointB.X )
-        //    {
-        //        //int MinX = pointA.X < pointB.X ? pointA.X : pointB.X;
-        //        int MinY = pointA.Y < pointB.Y ? pointA.Y : pointB.Y;
-        //        //int MaxX = pointA.X > pointB.X ? pointA.X : pointB.X;
-        //        int MaxY = pointA.Y > pointB.Y ? pointA.Y : pointB.Y;
-        //        foreach (BaseChess curChess in _chessPieces)
-        //        {
-        //            if (curChess.CurrentPoint.Y > MinY && curChess.CurrentPoint.Y < MaxY)
-        //            {
-        //                theList.Add(curChess);
-        //            }
-        //        }
-        //    }
-        //    else if (pointA.Y == pointB.Y)
-        //    {
-        //        int minX = pointA.X < pointB.X ? pointA.X : pointB.X;
+        }
+        private int charToNum(char sNum)
+        {
+            int num = sNum - 48;
+            return num;
+        }
+        /// <summary>
+        /// the chess type
+        /// r/R:Rook
+        /// n/N:Knight
+        /// b/B:Bishop
+        /// a/A:Advisor
+        /// k/K:King
+        /// c/C:Cannon
+        /// p/P:Pawn
+        /// </summary>
+        private void createPiece(byte theChessType)
+        {
+            switch (theChessType)
+            {
+                case 82:
+                case 114:
+                    //车
+                    Rook ju1 = new Rook();
+                    if (theChessType == 114)
+                    {
+                        ju1.Type = ChessType.Black;
+                        ju1.Text = "車";
+                    }
+                    else
+                    {
+                        ju1.Type = ChessType.Red;
+                        ju1.Text = "车";
+                    }
+                    ju1.GridX = m_IndexX;
+                    ju1.GridY = m_IndexY;
+                    ju1.PreviousGridX = m_IndexX;
+                    ju1.PreviousGridY = m_IndexY;
+                    ju1.InitChess();
+                    this.panel1.Controls.Add(ju1);
+                    ju1.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                    break;
+                case 78:
+                case 110:
+                    //马
+                    Knight ma = new Knight();
+                    if (theChessType == 110)
+                    {
+                        ma.Type = ChessType.Black;
+                        ma.Text = "馬";
+                    }
+                    else
+                    {
+                        ma.Type = ChessType.Red;
+                        ma.Text = "马";
+                    }
+                    ma.GridX = m_IndexX;
+                    ma.GridY = m_IndexY;
+                    ma.PreviousGridX = m_IndexX;
+                    ma.PreviousGridY = m_IndexY;
+                    ma.InitChess();
+                    this.panel1.Controls.Add(ma);
+                    ma.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                    chessArray[m_IndexY, m_IndexX] = (byte)ma.PieceType;
+                    break;
+                case 66:
+                case 98:
+                    //象
+                    Bishop xiang = new Bishop();
+                    if (theChessType == 98)
+                    {
+                        xiang.Type = ChessType.Black;
+                        xiang.Text = "象";
+                    }
+                    else
+                    {
+                        xiang.Type = ChessType.Red;
+                        xiang.Text = "相";
+                    }
+                    xiang.GridX = m_IndexX;
+                    xiang.GridY = m_IndexY;
+                    xiang.PreviousGridX = m_IndexX;
+                    xiang.PreviousGridY = m_IndexY;
 
-        //        int maxX = pointA.X > pointB.X ? pointA.X : pointB.X;
+                    xiang.InitChess();
+                    this.panel1.Controls.Add(xiang);
+                    xiang.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                    chessArray[m_IndexY, m_IndexX] = (byte)xiang.PieceType;
+                    break;
+                case 65:
+                case 97:
+                    //士
+                    Advisor shi = new Advisor();
+                    if (theChessType == 97)
+                    {
+                        shi.Type = ChessType.Black;
+                        shi.Text = "仕";
+                    }
+                    else
+                    {
+                        shi.Type = ChessType.Red;
+                        shi.Text = "士";
+                    }
+                    shi.GridX = m_IndexX;
+                    shi.GridY = m_IndexY;
+                    shi.PreviousGridX = m_IndexX;
+                    shi.PreviousGridY = m_IndexY;
+                    shi.InitChess();
+                    this.panel1.Controls.Add(shi);
+                    shi.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                    chessArray[m_IndexY, m_IndexX] = (byte)shi.PieceType;
+                    break;
+                case 75:
+                    //将
+                    jiang = new King();
+                    jiang.Type = ChessType.Red;
+                    jiang.GridX = m_IndexX;
+                    jiang.GridY = m_IndexY;
+                    jiang.PreviousGridX = m_IndexX;
+                    jiang.PreviousGridY = m_IndexY;
+                    jiang.Text = "将";
+                    jiang.InitChess();
+                    this.panel1.Controls.Add(jiang);
+                    jiang.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                    jiang.BeRemoved += new EventHandler(_beRemovedEventHandler);
+                    //jiang.IsMoved += new EventHandler(checkKingFaceToFace);
+                    chessArray[m_IndexY, m_IndexX] = (byte)jiang.PieceType;
+                    break;
+                case 107:
+                    //帅
+                    shuai = new King();
+                    shuai.Type = ChessType.Black;
+                    shuai.GridX = m_IndexX;
+                    shuai.GridY = m_IndexY;
+                    shuai.PreviousGridX = m_IndexX;
+                    shuai.PreviousGridY = m_IndexY;
+                    shuai.Text = "帅";
+                    shuai.InitChess();
+                    this.panel1.Controls.Add(shuai);
+                    shuai.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                    shuai.BeRemoved += new EventHandler(_beRemovedEventHandler);
+                    //shuai.IsMoved += new EventHandler(checkKingFaceToFace);
+                    chessArray[m_IndexY, m_IndexX] = (byte)shuai.PieceType;
+                    break;
+                case 67:
+                case 99:
+                    //炮
+                    Cannon pao = new Cannon();
+                    if (theChessType == 99)
+                    {
+                        pao.Type = ChessType.Black;
 
-        //        foreach (BaseChess curChess in _chessPieces)
-        //        {
-        //            if (curChess.CurrentPoint.X > minX && curChess.CurrentPoint.X < maxX)
-        //            {
-        //                theList.Add(curChess);
-        //            }
-        //        }
-        //    }
+                    }
+                    else
+                    {
+                        pao.Type = ChessType.Red;
 
-        //    return theList;
+                    }
+                    pao.Text = "炮";
+                    pao.GridX = m_IndexX;
+                    pao.GridY = m_IndexY;
+                    pao.PreviousGridX = m_IndexX;
+                    pao.PreviousGridY = m_IndexY;
 
-        //}
+                    pao.InitChess();
+                    this.panel1.Controls.Add(pao);
+                    pao.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                    chessArray[m_IndexY, m_IndexX] = (byte)pao.PieceType;
+                    break;
+                case 80:
+                case 112:
+                    //兵
+                    Pawn bing = new Pawn();
+                    if (theChessType == 112)
+                    {
+                        bing.Type = ChessType.Black;
+                        bing.Text = "卒";
+                    }
+                    else
+                    {
+                        bing.Type = ChessType.Red;
+                        bing.Text = "兵";
+                    }
+                    bing.GridX = m_IndexX;
+                    bing.GridY = m_IndexY;
+                    bing.PreviousGridX = m_IndexX;
+                    bing.PreviousGridY = m_IndexY;
+                    bing.InitChess();
+                    this.panel1.Controls.Add(bing);
+                    bing.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                    chessArray[m_IndexY, m_IndexX] = (byte)bing.PieceType;
+                    break;
 
-        //public BaseChess hasChessOnPointInField(Point targetPoint, BaseChess selectChess)
-        //{
-        //    BaseChess theChess = null;
-        //    int minX = targetPoint.X < selectChess.CurrentPoint.X ? targetPoint.X : selectChess.CurrentPoint.X;
-        //    int minY = targetPoint.Y < selectChess.CurrentPoint.Y ? targetPoint.Y : selectChess.CurrentPoint.Y;
-        //    foreach (BaseChess curChess in _chessPieces)
-        //    {
-        //        if (curChess.CurrentPoint.X == minX + _pieceWidth && curChess.CurrentPoint.Y == minY + _pieceWidth)
-        //        {
-        //            theChess = curChess;
-        //            break;
-        //        }
-        //    }
-        //    return theChess;
-
-        //}
-        //public BaseChess hasChessOnPointInSun(int gridX,int gridY, BaseChess theKnight)
-        //{
-        //    BaseChess theChess = null;
-        //    if (Math.Abs(gridX-theKnight.GridX)==2 && Math.Abs(gridY-theKnight.GridY)==1)
-        //    {
-        //        theChess = hasChessOnPoint((gridX + theKnight.GridX) / 2, gridY);
-        //    }
-        //    else if (Math.Abs(gridY - theKnight.GridY) == 2 && Math.Abs(gridX - theKnight.GridX) == 1)
-        //    {
-        //        theChess = hasChessOnPoint(gridX, (gridY + theKnight.GridX) / 2);
-        //    }
-
-        //    return theChess;
-
-        //}
+            }
+            m_IndexX++;
+           
+        }
+        /// <summary>
+        /// static load chess pieces
+        /// </summary>
         private void loadChessPieces()
         {
-
-        }
-
-        private void StartButton_Click(object sender, EventArgs e)
-        {
-            //_previousChess.remove();
-            this.panel1.Controls.Clear();
-            timer1.Enabled = true;
-            timer1.Start();
-            _changeType(true);
-            //_currentActionType = ChessType.Red;
-            //TypeStatus.Text = Enum.GetName(typeof(ChessType), _currentActionType);
-
             #region 放置棋子,红方
             for (int i = 0; i <= 8; i += 8)
             {
@@ -482,7 +635,7 @@ namespace ChineseChess
                 ju1.InitChess();
                 this.panel1.Controls.Add(ju1);
                 ju1.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 0] = (byte)ju1.PieceType;
+                chessArray[0, i] = (byte)ju1.PieceType;
 
             }
 
@@ -498,7 +651,7 @@ namespace ChineseChess
                 ma.InitChess();
                 this.panel1.Controls.Add(ma);
                 ma.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 0] = (byte)ma.PieceType;
+                chessArray[0, i] = (byte)ma.PieceType;
                 //因为“炮”与“马”的位置都类似，循环次数也一样
                 Cannon pao = new Cannon();
                 pao.Type = ChessType.Red;
@@ -510,7 +663,7 @@ namespace ChineseChess
                 pao.InitChess();
                 this.panel1.Controls.Add(pao);
                 pao.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 2] = (byte)pao.PieceType;
+                chessArray[2, i] = (byte)pao.PieceType;
             }
 
             for (int i = 2; i <= 6; i += 4)
@@ -525,7 +678,7 @@ namespace ChineseChess
                 xiang.InitChess();
                 this.panel1.Controls.Add(xiang);
                 xiang.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 0] = (byte)xiang.PieceType;
+                chessArray[0, i] = (byte)xiang.PieceType;
             }
 
             for (int i = 3; i <= 6; i += 2)
@@ -540,7 +693,7 @@ namespace ChineseChess
                 shi.InitChess();
                 this.panel1.Controls.Add(shi);
                 shi.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 0] = (byte)shi.PieceType;
+                chessArray[0, i] = (byte)shi.PieceType;
             }
 
             jiang = new King();
@@ -555,7 +708,7 @@ namespace ChineseChess
             jiang.MouseClick += new MouseEventHandler(chessItem_MouseClick);
             jiang.BeRemoved += new EventHandler(_beRemovedEventHandler);
             //jiang.IsMoved += new EventHandler(checkKingFaceToFace);
-            chessArray[4, 0] = (byte)jiang.PieceType;
+            chessArray[0, 4] = (byte)jiang.PieceType;
 
             for (int i = 0; i <= 8; i += 2)
             {
@@ -569,7 +722,7 @@ namespace ChineseChess
                 bing.InitChess();
                 this.panel1.Controls.Add(bing);
                 bing.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 3] = (byte)bing.PieceType;
+                chessArray[3, i] = (byte)bing.PieceType;
             }
             #endregion
 
@@ -586,7 +739,7 @@ namespace ChineseChess
                 ju1.InitChess();
                 this.panel1.Controls.Add(ju1);
                 ju1.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 9] = (byte)ju1.PieceType;
+                chessArray[9, i] = (byte)ju1.PieceType;
             }
 
             for (int i = 1; i <= 7; i += 6)
@@ -601,7 +754,7 @@ namespace ChineseChess
                 ma.InitChess();
                 this.panel1.Controls.Add(ma);
                 ma.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 9] = (byte)ma.PieceType;
+                chessArray[9, i] = (byte)ma.PieceType;
 
                 //因为“炮”与“马”的位置都类似，循环次数也一样
                 Cannon pao = new Cannon();
@@ -614,7 +767,7 @@ namespace ChineseChess
                 pao.InitChess();
                 this.panel1.Controls.Add(pao);
                 pao.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 7] = (byte)pao.PieceType;
+                chessArray[7, i] = (byte)pao.PieceType;
             }
 
             for (int i = 2; i <= 6; i += 4)
@@ -629,7 +782,7 @@ namespace ChineseChess
                 xiang.InitChess();
                 this.panel1.Controls.Add(xiang);
                 xiang.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 9] = (byte)xiang.PieceType;
+                chessArray[9, i] = (byte)xiang.PieceType;
             }
 
             for (int i = 3; i <= 6; i += 2)
@@ -644,7 +797,7 @@ namespace ChineseChess
                 shi.InitChess();
                 this.panel1.Controls.Add(shi);
                 shi.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 9] = (byte)shi.PieceType;
+                chessArray[9, i] = (byte)shi.PieceType;
             }
 
             shuai = new King();
@@ -659,7 +812,7 @@ namespace ChineseChess
             shuai.MouseClick += new MouseEventHandler(chessItem_MouseClick);
             shuai.BeRemoved += new EventHandler(_beRemovedEventHandler);
             //shuai.IsMoved += new EventHandler(checkKingFaceToFace);
-            chessArray[4, 9] = (byte)shuai.PieceType;
+            chessArray[9, 4] = (byte)shuai.PieceType;
 
             for (int i = 0; i <= 8; i += 2)
             {
@@ -673,10 +826,22 @@ namespace ChineseChess
                 bing.InitChess();
                 this.panel1.Controls.Add(bing);
                 bing.MouseClick += new MouseEventHandler(chessItem_MouseClick);
-                chessArray[i, 6] = (byte)bing.PieceType;
+                chessArray[6, i] = (byte)bing.PieceType;
             }
             StartButton.Enabled = false;
             #endregion
+        }
+        private void StartButton_Click(object sender, EventArgs e)
+        {
+            //_previousChess.remove();
+            this.panel1.Controls.Clear();
+            timer1.Enabled = true;
+            timer1.Start();
+            _changeType(true);
+            //_currentActionType = ChessType.Red;
+            //TypeStatus.Text = Enum.GetName(typeof(ChessType), _currentActionType);
+            loadChessPieces(fen);
+            
 
         }
 
@@ -937,11 +1102,11 @@ namespace ChineseChess
 
 
         }
-        private void threadPro()
-        {
-            MethodInvoker MethInvo = new MethodInvoker(showDangerInfo);
-            BeginInvoke(MethInvo);
-        }
+        //private void threadPro()
+        //{
+        //    MethodInvoker MethInvo = new MethodInvoker(showDangerInfo);
+        //    BeginInvoke(MethInvo);
+        //}
 
         private void doSomeAfterMove()
         {
@@ -1019,6 +1184,16 @@ namespace ChineseChess
         private void timer1_Tick(object sender, EventArgs e)
         {
 
+        }
+
+        private void Chessboard_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _theEngineClient.DisposeEngine();
+        }
+
+        private void TestButton_Click(object sender, EventArgs e)
+        {
+            _theEngineClient.SendUcciCommand();
         }
         //private void Chessboard_Resize(object sender, EventArgs e)
         //{

@@ -25,6 +25,15 @@ namespace ChineseChess.ChessItems
         PAWN = 7
        
     }
+    /// <summary>
+    /// RedUpBlackDown means red piece is up of the board
+    /// BlackUpRedDown means red piece is down of the board
+    /// </summary>
+    public enum AtackDirection
+    {
+        RedUpBlackDown = 0,
+        BlackUpRedDown = 1
+    }
 
     /// 棋子基类 
     /// </summary> 
@@ -163,7 +172,70 @@ namespace ChineseChess.ChessItems
             get { return _previousGridY; }
             set { _previousGridY = value; }
         }
-      
+
+        /// <summary>
+        /// This is for piece like King, Advisor
+        /// </summary>
+        /// <param name="gridX"></param>
+        /// <param name="gridY"></param>
+        /// <returns></returns>
+        public bool isInSquareBox(int gridX, int gridY)
+        {
+            if (gridX < 3 || gridX > 5)
+            {
+                return false;
+            }
+            if (ChessUtils.ChessboardDirection == AtackDirection.RedUpBlackDown)
+            {
+                  if ((Type == ChessType.Red && gridY <= 2) ||
+                (Type == ChessType.Black && gridY >= 7))
+                  {
+                      return true;
+                  }
+            }
+            else if (ChessUtils.ChessboardDirection == AtackDirection.BlackUpRedDown)
+            {
+                if ((Type == ChessType.Red && gridY >= 7) ||
+              (Type == ChessType.Black && gridY <= 2))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// This is for piece like King, Advisor
+        /// </summary>
+        /// <param name="gridX"></param>
+        /// <param name="gridY"></param>
+        /// <returns></returns>
+        public bool isInOwnSide(int gridX, int gridY)
+        {
+            if (ChessUtils.ChessboardDirection == AtackDirection.RedUpBlackDown)
+            {
+                if (Type == ChessType.Red && gridY <= 4)
+                {
+                    return true;
+                }
+                else if (Type == ChessType.Black && gridY > 5)
+                {
+                    return true;
+                }
+            }
+            else if (ChessUtils.ChessboardDirection == AtackDirection.BlackUpRedDown)
+            {
+                if (Type == ChessType.Red && gridY > 5)
+                {
+                    return true;
+                }
+                else if (Type == ChessType.Black && gridY <= 4)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public virtual bool obeyTheLimit(int gridX,int gridY)
         {

@@ -21,18 +21,15 @@ namespace ChineseChess.ChessItems
             {
                 return false;
             }
-            if (Type == ChessType.Red && gridY <= 4
-                && Math.Abs(gridX - GridX) == 2 && Math.Abs(gridY - GridY) == 2
-                && !hasChessOnPoint((gridX + GridX) / 2, (gridY + GridY) / 2))
+            if (isInOwnSide(gridX, gridY))
             {
-                return true;
+                if (Math.Abs(gridX - GridX) == 2 && Math.Abs(gridY - GridY) == 2
+               && !hasChessOnPoint((gridX + GridX) / 2, (gridY + GridY) / 2))
+                {
+                    return true;
+                }
             }
-            else if (Type == ChessType.Black && gridY > 5
-                && Math.Abs(gridX - GridX) == 2 && Math.Abs(gridY - GridY) == 2
-                && !hasChessOnPoint((gridX + GridX) / 2, (gridY + GridY) / 2))
-            {
-                return true;
-            }
+         
             return false;
 
         }

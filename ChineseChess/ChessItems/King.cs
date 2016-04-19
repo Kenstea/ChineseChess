@@ -29,12 +29,7 @@ namespace ChineseChess.ChessItems
                 return false;
             }
 
-            if (gridX < 3 || gridX > 5)
-            {
-                return false;
-            }
-            if ((Type == ChessType.Red && gridY <= 2) ||
-                (Type == ChessType.Black && gridY >= 7))
+            if (isInSquareBox(gridX, gridY))
             {
                 if (GridX == gridX && (Math.Abs(GridY - gridY) == 1)
                     || GridY == gridY && (Math.Abs(GridX - gridX) == 1))
@@ -42,11 +37,13 @@ namespace ChineseChess.ChessItems
 
                     return true;
                 }
-
             }
+           
             return false;
 
         }
+
+        
 
         //public override bool move(Point nextLocation)
         //{

@@ -21,40 +21,19 @@ namespace ChineseChess.ChessItems
             {
                 return false;
             }
-            if (Type == ChessType.Red)
+            if (isInOwnSide(gridX, gridY))
             {
-                if (GridY <= 4)
+                if (gridY - GridY == 1 && GridX == gridX)
                 {
-                    if (gridY - GridY == 1 && GridX == gridX)
-                    {
-                        isObey = true;
-                    }
-                }
-                else
-                {
-                    if ((gridY - GridY == 1 && GridX == gridX) ||
-                        (Math.Abs(GridX - gridX) == 1 && GridY == gridY))
-                    {
-                        isObey = true;
-                    }
+                    return true;
                 }
             }
             else
             {
-                if (GridY >= 5)
+                if ((gridY - GridY == 1 && GridX == gridX) ||
+                        (Math.Abs(GridX - gridX) == 1 && GridY == gridY))
                 {
-                    if (GridY - gridY == 1 && GridX == gridX)
-                    {
-                        isObey = true;
-                    }
-                }
-                else
-                {
-                    if ((GridY - gridY == 1 && GridX == gridX) ||
-                        (Math.Abs(GridX - gridX) == 1 && GridY == gridX))
-                    {
-                        isObey = true;
-                    }
+                    return true;
                 }
             }
 

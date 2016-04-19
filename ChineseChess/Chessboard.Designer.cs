@@ -40,6 +40,8 @@
             this.TypeStatusLabel = new System.Windows.Forms.Label();
             this.UndoButton = new System.Windows.Forms.Button();
             this.dangerLabel = new System.Windows.Forms.Label();
+            this.EngineInfoText = new System.Windows.Forms.RichTextBox();
+            this.TestButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panel1
@@ -72,7 +74,7 @@
             // XLabel
             // 
             this.XLabel.AutoSize = true;
-            this.XLabel.Location = new System.Drawing.Point(752, 238);
+            this.XLabel.Location = new System.Drawing.Point(709, 520);
             this.XLabel.Name = "XLabel";
             this.XLabel.Size = new System.Drawing.Size(70, 13);
             this.XLabel.TabIndex = 2;
@@ -81,7 +83,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(752, 266);
+            this.label2.Location = new System.Drawing.Point(709, 548);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(70, 13);
             this.label2.TabIndex = 3;
@@ -90,7 +92,7 @@
             // XCoordinate
             // 
             this.XCoordinate.AutoSize = true;
-            this.XCoordinate.Location = new System.Drawing.Point(836, 238);
+            this.XCoordinate.Location = new System.Drawing.Point(793, 520);
             this.XCoordinate.Name = "XCoordinate";
             this.XCoordinate.Size = new System.Drawing.Size(35, 13);
             this.XCoordinate.TabIndex = 2;
@@ -99,7 +101,7 @@
             // YCoordinate
             // 
             this.YCoordinate.AutoSize = true;
-            this.YCoordinate.Location = new System.Drawing.Point(836, 266);
+            this.YCoordinate.Location = new System.Drawing.Point(793, 548);
             this.YCoordinate.Name = "YCoordinate";
             this.YCoordinate.Size = new System.Drawing.Size(35, 13);
             this.YCoordinate.TabIndex = 3;
@@ -118,7 +120,7 @@
             // 
             this.TypeStatusLabel.AutoSize = true;
             this.TypeStatusLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TypeStatusLabel.Location = new System.Drawing.Point(708, 153);
+            this.TypeStatusLabel.Location = new System.Drawing.Point(686, 43);
             this.TypeStatusLabel.Name = "TypeStatusLabel";
             this.TypeStatusLabel.Size = new System.Drawing.Size(108, 24);
             this.TypeStatusLabel.TabIndex = 2;
@@ -148,11 +150,31 @@
             this.dangerLabel.Text = "    将！  ";
             this.dangerLabel.Visible = false;
             // 
+            // EngineInfoText
+            // 
+            this.EngineInfoText.Location = new System.Drawing.Point(690, 119);
+            this.EngineInfoText.Name = "EngineInfoText";
+            this.EngineInfoText.Size = new System.Drawing.Size(238, 180);
+            this.EngineInfoText.TabIndex = 8;
+            this.EngineInfoText.Text = "";
+            // 
+            // TestButton
+            // 
+            this.TestButton.Location = new System.Drawing.Point(923, 332);
+            this.TestButton.Name = "TestButton";
+            this.TestButton.Size = new System.Drawing.Size(75, 57);
+            this.TestButton.TabIndex = 9;
+            this.TestButton.Text = "Test";
+            this.TestButton.UseVisualStyleBackColor = true;
+            this.TestButton.Click += new System.EventHandler(this.TestButton_Click);
+            // 
             // Chessboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(921, 635);
+            this.ClientSize = new System.Drawing.Size(1114, 635);
+            this.Controls.Add(this.TestButton);
+            this.Controls.Add(this.EngineInfoText);
             this.Controls.Add(this.dangerLabel);
             this.Controls.Add(this.UndoButton);
             this.Controls.Add(this.TypeStatus);
@@ -165,6 +187,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "Chessboard";
             this.Text = "中国象棋";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Chessboard_FormClosing);
             this.Load += new System.EventHandler(this.Chessboard_Load);
             this.MouseClick += new System.Windows.Forms.MouseEventHandler(this.Chessboard_MouseClick);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Chessboard_MouseMove);
@@ -186,6 +209,8 @@
         private System.Windows.Forms.Label TypeStatusLabel;
         private System.Windows.Forms.Button UndoButton;
         private System.Windows.Forms.Label dangerLabel;
+        private System.Windows.Forms.RichTextBox EngineInfoText;
+        private System.Windows.Forms.Button TestButton;
 
 
 

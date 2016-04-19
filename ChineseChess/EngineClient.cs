@@ -67,6 +67,14 @@ namespace ChineseChess
             }
             return bResult;
         }
+
+        public void DisposeEngine()
+        {
+            //_ponderEngine.Close();
+            //_ponderEngine.Dispose();
+            _ponderEngine.Kill();
+            _ponderEngine.Dispose();
+        }
         public bool changeEngine(string sPath)
         {
             _loadEngine(sPath);
@@ -100,9 +108,13 @@ namespace ChineseChess
 
         private void _ponderEngine_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-          
+            ReceviedEngineData(this, e);
         }
+       
+        private void ExecutePositionCommand(/*UcciCommand cmd*/)
+        {
 
+        }
         private void _ponderEngine_Exited(object sender, EventArgs e)
         {
            
