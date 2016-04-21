@@ -269,6 +269,23 @@ namespace ChineseChess.ChessItems
 
 
         }
+
+        public static BaseChess getChessOnPoint(Panel parent, int gridX, int gridY)
+        {
+            foreach (Control curItem in parent.Controls)
+            {
+                if (curItem is BaseChess)
+                {
+                    BaseChess ci = (BaseChess)curItem;
+                    if (ci.GridX == gridX && ci.GridY == gridY)
+                    {
+                        return ci;
+                    }
+                }
+            }
+            return null;
+        }
+
         public int PointConvertToGrid(int fromPoint)
         {
             int toGrid = (int)Math.Round((decimal)fromPoint / ChessPieceSize);
@@ -293,7 +310,22 @@ namespace ChineseChess.ChessItems
                 return false;
             }
         }
-
+        public virtual bool move(int gridX, int gridY)
+        {
+            if (obeyTheLimit(gridX, gridY))
+            {
+                PreviousGridX = GridX;
+                PreviousGridY = GridY;
+                GridX = gridX;
+                GridY = gridY;
+                InitChess();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public virtual void remove()
         {

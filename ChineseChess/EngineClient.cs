@@ -6,6 +6,7 @@ using System.Diagnostics;
 using ChineseChess.ChessItems;
 using BussinessObjects;
 using BusinessObjects.Ponder;
+using BusinessObjects.Events;
 
 namespace ChineseChess
 {
@@ -13,6 +14,8 @@ namespace ChineseChess
     {
         public DataReceivedEventHandler ReceviedEngineData;
         public EventHandler EngineIsOK;
+        public BestMoveReceivedEventHandler BestMoveReceived;
+
         public static EngineClient DefaultEngineClient
         {
             get
@@ -31,6 +34,7 @@ namespace ChineseChess
         private string _enginePath;
         private LogHandler m_LogHandler;
         private StringBuilder m_engineInfos;
+        private const string I_MOVE = "moves";
         private EngineClient(string enginePath = "")
         {
             string sPath = System.Environment.CurrentDirectory;
@@ -43,7 +47,8 @@ namespace ChineseChess
             } 
             else
             {
-                string defaultPath = System.Environment.CurrentDirectory + "\\PonderEngine.exe";
+                //string defaultPath = System.Environment.CurrentDirectory + "\\PonderEngine.exe";
+                string defaultPath = System.Environment.CurrentDirectory + "\\bhws\\Binghewusi.exe";
                 _loadEngine(defaultPath);
             }
             
@@ -53,6 +58,7 @@ namespace ChineseChess
         private bool _loadEngine(string enginePath)
         {
             bool bResult = true;
+            _ponderEngine = null;
             _ponderEngine = new Process();
             _ponderEngine.StartInfo.FileName = enginePath;
             _ponderEngine.StartInfo.CreateNoWindow = true;
@@ -86,6 +92,9 @@ namespace ChineseChess
         }
         public bool changeEngine(string sPath)
         {
+            SendCommand("quit");
+            _ponderEngine.OutputDataReceived -= new DataReceivedEventHandler(_ponderEngine_OutputDataReceived);
+            _ponderEngine.Exited -= new EventHandler(_ponderEngine_Exited);
             _loadEngine(sPath);
             return true;
         }
@@ -104,7 +113,13 @@ namespace ChineseChess
             string sCommand = "position fen " + sFen;
             SendCommand(sCommand);
         }
-        
+
+        public void SendGoCommand(int depth)
+        {
+            string sCommand = "go depth " + depth;
+            SendCommand(sCommand);
+        }
+
         public void SendCommand(string sCommand)
         {
             m_LogHandler.logging("GUI send Command: " + sCommand);
@@ -118,15 +133,25 @@ namespace ChineseChess
             {
                 m_LogHandler.logging(e.Data);
                 m_engineInfos.Append(m_UcciInfo + "\n");
-                if (m_UcciInfo.Contains("ucciok"))
+                
+                UcciCommand cmd = UcciCommand.Parse(m_UcciInfo);
+                if (cmd.Name == "ucciok")
                 {
                     EngineIsOK(this, null);
                 }
+                else if (cmd.Name == "bestmove")
+                {
+                    string bestmove = cmd.Paras.Substring(0, 4);
+                    BestMoveReceivedEventArgs newEvent = new BestMoveReceivedEventArgs(bestmove);
+                    BestMoveReceived(this, newEvent);
+                }
+                else if (cmd.Name == "position")
+                {
+
+                }
+               
             }
-          
-            //ReceviedEngineData(this, e);
-            
-             
+  
         }
 
         public string EngineInfo

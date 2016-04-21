@@ -45,6 +45,8 @@
             this.RedRadioButton = new System.Windows.Forms.RadioButton();
             this.BlackRadioButton = new System.Windows.Forms.RadioButton();
             this.PlayerTypeLabel = new System.Windows.Forms.Label();
+            this.EngineOpenFileDialog = new System.Windows.Forms.OpenFileDialog();
+            this.ChangeEngineButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // panel1
@@ -206,11 +208,26 @@
             this.PlayerTypeLabel.TabIndex = 13;
             this.PlayerTypeLabel.Text = "玩家类型";
             // 
+            // EngineOpenFileDialog
+            // 
+            this.EngineOpenFileDialog.FileName = "openFileDialog1";
+            // 
+            // ChangeEngineButton
+            // 
+            this.ChangeEngineButton.Location = new System.Drawing.Point(681, 12);
+            this.ChangeEngineButton.Name = "ChangeEngineButton";
+            this.ChangeEngineButton.Size = new System.Drawing.Size(75, 48);
+            this.ChangeEngineButton.TabIndex = 14;
+            this.ChangeEngineButton.Text = "更换引擎";
+            this.ChangeEngineButton.UseVisualStyleBackColor = true;
+            this.ChangeEngineButton.Click += new System.EventHandler(this.ChangeEngineButton_Click);
+            // 
             // Chessboard
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1114, 635);
+            this.Controls.Add(this.ChangeEngineButton);
             this.Controls.Add(this.PlayerTypeLabel);
             this.Controls.Add(this.BlackRadioButton);
             this.Controls.Add(this.RedRadioButton);
@@ -255,6 +272,8 @@
         private System.Windows.Forms.RadioButton RedRadioButton;
         private System.Windows.Forms.RadioButton BlackRadioButton;
         private System.Windows.Forms.Label PlayerTypeLabel;
+        private System.Windows.Forms.OpenFileDialog EngineOpenFileDialog;
+        private System.Windows.Forms.Button ChangeEngineButton;
 
 
 

@@ -74,14 +74,14 @@ namespace Ponder.ChineseChess
                 int num = board.RedPieceNum[idx];
                 board.RedPieceIndex[pos238] = num;
                 board.RedPiecePos[idx, num] = pos238;
-                ++board.RedPieceNum[idx];
+                ++(board.RedPieceNum[idx]);
             }
             else
             {
                 int num = board.BlackPieceNum[idx];
                 board.BlackPieceIndex[pos238] = num;
                 board.BlackPiecePos[idx, num] = pos238;
-                ++board.BlackPieceNum[idx];
+                ++(board.BlackPieceNum[idx]);
             }
         }
             //switch (piece)
