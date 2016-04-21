@@ -77,7 +77,6 @@ namespace ChineseChess
         private string moves = "";
         private int m_nNoOfMoves = 0;
         private bool m_bMoveStep = false;
-        private string m_UcciInfo;
         private InfoType m_InfoType;
 
         private ChessType m_PlayerType;
@@ -269,6 +268,7 @@ namespace ChineseChess
                     ju1.InitChess();
                     this.panel1.Controls.Add(ju1);
                     ju1.MouseClick += new MouseEventHandler(chessItem_MouseClick);
+                    chessArray[m_IndexY, m_IndexX] = (byte)ju1.PieceType;
                     break;
                 case 78:
                 case 110:
@@ -685,6 +685,7 @@ namespace ChineseChess
                 {
                     //_selectChess.IsChecked = false;
                     chessArray[_selectChess.GridY, _selectChess.GridX] = (byte)_selectChess.PieceType;
+                    chessArray[_selectChess.PreviousGridY, _selectChess.PreviousGridX] = (byte)0;
                     string move = ChessUtils.getMoveString(_selectChess.GridX, _selectChess.GridY, _selectChess.PreviousGridX, _selectChess.PreviousGridY);
                     _updateMovesStep(move);                   
                     doSomeAfterMove();
@@ -703,6 +704,7 @@ namespace ChineseChess
                 {
                     //_selectChess.IsChecked = false;
                     chessArray[_selectChess.GridY, _selectChess.GridX] = (byte)_selectChess.PieceType;
+                    chessArray[_selectChess.PreviousGridY, _selectChess.PreviousGridX] = (byte)0;
                     string move = ChessUtils.getMoveString(_selectChess.GridX, _selectChess.GridY, _selectChess.PreviousGridX, _selectChess.PreviousGridY);
                     _updateMovesStep(move);
                     doSomeAfterMove();
@@ -757,9 +759,14 @@ namespace ChineseChess
         /// </summary>
         private void doSomeAfterMove()
         {
-            _sendPositionCommand();
-            _theEngineClient.SendGoCommand(5);
-            _theEngineClient.BestMoveReceived += new BestMoveReceivedEventHandler(_theEngineClient_BestMoveReceived);
+            if (_currentActionType == m_PlayerType)
+            {
+                _sendPositionCommand();
+                _theEngineClient.SendGoCommand(5);
+                _theEngineClient.BestMoveReceived += new BestMoveReceivedEventHandler(_theEngineClient_BestMoveReceived);
+                
+            }
+            _updateFenStr();
             //the type should not change before sending the position
             _changeType();
             //两种将的方式都会显示将
@@ -962,8 +969,17 @@ namespace ChineseChess
                         temp += theChar;
                     }
                 }
-                theChar = '/';
-                temp += theChar;
+                if (countOfEmpty > 0)
+                {
+                    temp += countOfEmpty;
+                    countOfEmpty = 0;
+                }
+                if (m_IndexY < chessRow)
+                {
+                    theChar = '/';
+                    temp += theChar;
+                }
+               
             }
             fen = temp;
         }
